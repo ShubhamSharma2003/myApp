@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
+import Headers from '../components/universal/header';
 
 const CartScreen = () => {
     const cartItems = [
@@ -11,7 +12,7 @@ const CartScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>My Cart</Text>
+            <Headers />
             
             <View style={styles.addressContainer}>
                 <Text style={styles.addressTitle}>Delivery Address</Text>

@@ -1,36 +1,20 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from '@expo/vector-icons/Ionicons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native'; // ✅ Import useNavigation
-import Logo from './Logo';
+import { View, Text, StyleSheet } from "react-native";
+import Icon from "@expo/vector-icons/Ionicons";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
 
 export default function Header() {
-    const navigation = useNavigation(); // ✅ Get navigation object
+    const navigation = useNavigation();
+    const routeIndex = useNavigationState((state) => state.index);
+    const currentRoute = useNavigationState((state) => state.routes[routeIndex]?.name);
 
     return (
         <View style={styles.headerContainer}>
-            {/* Top Row */}
             <View style={styles.topRow}>
-                <Logo />
+                <Text style={styles.tabTitle}>{currentRoute}</Text>
                 <View style={styles.rightIcons}>
                     <Icon name="notifications-outline" size={24} style={styles.icon} />
                     <Icon name="heart-outline" size={24} style={styles.icon} />
-                    
-                </View>
-            </View>
-            
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-                <View style={styles.searchBar}>
-                    <TextInput 
-                        placeholder="Search for products here..."
-                        style={styles.searchInput}
-                    />
-                    <View style={styles.searchActions}>
-                        <Icon name="mic-outline" size={20} color="#666" style={styles.icon} />
-                        <Icon name="camera-outline" size={20} color="#666" style={styles.icon} />
-                    </View>
                 </View>
             </View>
         </View>
@@ -39,43 +23,32 @@ export default function Header() {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        backgroundColor: '#FFF',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        backgroundColor: "#FFF",
         paddingTop: 10,
         paddingHorizontal: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: "#f0f0f0",
     },
     topRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 5,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingBottom: 10,
+    },
+    tabTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
     },
     rightIcons: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
     },
     icon: {
         marginHorizontal: 8,
-    },
-    searchContainer: {
-        marginBottom: 12,
-    },
-    searchBar: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#F5F5F5',
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderRadius: 25,
-    },
-    searchInput: {
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 16,
-    },
-    searchActions: {
-        flexDirection: 'row',
-        alignItems: 'center',
     },
 });

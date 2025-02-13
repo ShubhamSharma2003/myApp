@@ -10,8 +10,6 @@ import Home from './src/screens/home.js';
 import categoryScreen from './src/screens/categoryScreen.js';
 import Premium from './src/screens/Premium.js';
 import Profile from './src/screens/profile.js';
-import AccountStacks from './src/stacks/accountArena.js';
-// import SplashScreen from './src/screens/SplashScreen.js';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -33,7 +31,7 @@ const MyTabs = () => {
                 }}
             />
             <Tab.Screen 
-                name="categoryScreen" 
+                name="Category" 
                 component={categoryScreen}
                 options={{
                     tabBarIcon: ({ color }) => <Icon name="grid-outline" color={color} size={25} />,
@@ -62,6 +60,7 @@ const MyTabs = () => {
             />
             <Tab.Screen 
                 name="Account"
+                component={Profile}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <View style={styles.badgeContainer}>
@@ -71,7 +70,6 @@ const MyTabs = () => {
                     tabBarLabel: ({ focused }) => <Text style={[styles.navText, focused && styles.activeText]}>Account</Text>
                 }}
             >
-                {(props) => <AccountStacks {...props} />}
             </Tab.Screen>
         </Tab.Navigator>
     );
