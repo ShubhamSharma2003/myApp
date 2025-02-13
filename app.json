@@ -1,0 +1,34 @@
+
+{
+  "expo": {
+    "name": "goNoise",
+    "slug": "goNoise",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/noise.png",
+    "splash": {
+      "image": "./assets/noise.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "newArchEnabled": true,
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
