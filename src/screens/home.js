@@ -8,6 +8,11 @@ import CallToAction from '../components/universal/CallToAction';
 import ImageCarousel from '../components/universal/ImageCarousel';
 import ProductCarousel from '../components/universal/ProductCarousel';
 import Header from '../components/universal/header';
+import ImageCardList from '../components/universal/ImageCardList';
+import ProductGrid from '../components/universal/ProductGrid';
+import NewArrivalsGrid from '../components/universal/NewArrivalsGrid';
+import SuggestedProducts from '../components/universal/SuggestedProducts';
+import HybridList from '../components/universal/HybridList';
 
 export default function Home() {
     return (
@@ -15,13 +20,18 @@ export default function Home() {
             <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
             <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <Header />
-                <SearchBar />
-                <CategoryNav />
-                <PromotionalBanner />
-                <SponsorsSection />
-                <ImageCarousel />
-                <ProductCarousel />
-                <CallToAction />
+                {/* <SearchBar /> */}
+                {/* <CategoryNav /> */}
+                {/* <PromotionalBanner /> */}
+                <ImageCardList />
+                <ProductGrid />
+                <NewArrivalsGrid />
+                <HybridList />
+                <SuggestedProducts />
+                {/* <SponsorsSection /> */}
+                {/* <ImageCarousel /> */}
+                {/* <ProductCarousel /> */}
+                {/* <CallToAction /> */}
             </ScrollView>
         </SafeAreaView>
     );

@@ -1,8 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { Platform, SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import CartScreen from './src/screens/CartScreen.js';
@@ -10,6 +8,11 @@ import Home from './src/screens/home.js';
 import categoryScreen from './src/screens/categoryScreen.js';
 import Premium from './src/screens/Premium.js';
 import Profile from './src/screens/profile.js';
+import NoiseLogo from './assets/icons/noise3.svg';
+import NoiseLogo2 from './assets/icons/noiseGrey.svg';
+
+
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -20,67 +23,65 @@ const MyTabs = () => {
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: styles.tabBar,
+                tabBarShowLabel: false, // Hide labels
             }}
         >
             <Tab.Screen 
                 name="Home" 
                 component={Home}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="home" color={color} size={25} />,
-                    tabBarLabel: ({ focused }) => <Text style={[styles.navText, focused && styles.activeText]}>Home</Text>
+                    tabBarIcon: ({ focused }) => (
+                        focused ? (
+                            <View style={styles.imageContainer}>
+                                <NoiseLogo width={50} height={20} style={focused && styles.imageActive} />
+                            </View>
+                        ) : (
+                            <View style={styles.imageContainer}>
+                                <NoiseLogo2 width={50} height={20} style={focused && styles.imageActive} />
+                            </View>
+                        )
+                    ),
                 }}
             />
+
             <Tab.Screen 
                 name="Category" 
                 component={categoryScreen}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="grid-outline" color={color} size={25} />,
-                    tabBarLabel: ({ focused }) => <Text style={[styles.navText, focused && styles.activeText]}>Categories</Text>
+                    tabBarIcon: ({ focused }) => (
+                        <Icon name="search-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                    ),
                 }}
             />
             <Tab.Screen 
                 name="Premium" 
                 component={Premium}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="diamond-outline" color={color} size={25} />,
-                    tabBarLabel: ({ focused }) => <Text style={[styles.navText, focused && styles.activeText]}>Premium</Text>
+                    tabBarIcon: ({ focused }) => (
+                        <Icon name="heart-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                    ),
                 }}
             />
             <Tab.Screen 
                 name="Cart"
                 component={CartScreen}
                 options={{
-                    tabBarIcon: ({ color }) => (
-                        <View style={styles.badgeContainer}>
-                            <Icon name="bag-outline" color={color} size={25} />
-                        </View>
+                    tabBarIcon: ({ focused }) => (
+                        <Icon name="bag-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
                     ),
-                    tabBarLabel: ({ focused }) => <Text style={[styles.navText, focused && styles.activeText]}>Cart</Text>
                 }}
             />
             <Tab.Screen 
                 name="Account"
                 component={Profile}
                 options={{
-                    tabBarIcon: ({ color }) => (
-                        <View style={styles.badgeContainer}>
-                            <Icon name="person-outline" color={color} size={25} />
-                        </View>
+                    tabBarIcon: ({ focused }) => (
+                        <Icon name="person-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
                     ),
-                    tabBarLabel: ({ focused }) => <Text style={[styles.navText, focused && styles.activeText]}>Account</Text>
                 }}
-            >
-            </Tab.Screen>
+            />
         </Tab.Navigator>
     );
-};
-
-const MyTheme = {
-    ...DefaultTheme,
-    colors: {
-        ...DefaultTheme.colors,
-        background: '#ffffff',
-    },
 };
 
 export default function App() {
@@ -97,51 +98,35 @@ export default function App() {
     );
 }
 
-const s = StyleSheet.create({
-    fl1: { flex: 1 },
-    mgtp30: { marginTop: 30 },
-});
-
+// ✅ **Updated Styles**
 const styles = StyleSheet.create({
     tabBar: {
         backgroundColor: '#fff',
         borderTopWidth: 1,
         borderTopColor: '#f0f0f0',
-        paddingVertical: 5,
+        height: 60, // Adjust height for better spacing
+        paddingBottom: 19, 
+        paddingTop: 10,
     },
-    navText: {
-        fontSize: 11,
-        color: '#666',
-        paddingBottom: 2,
+    imageContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: 20,
+        width: 100,  // Make image container larger
+        height: 60,
     },
-    activeText: {
-        color: '#FF3366',
-        fontWeight: '600',
+    image: {
+        width: 50,  // Adjust for better spacing
+        height: 20,
     },
-    badgeContainer: {
-        position: 'relative',
+    imageActive: {
+        tintColor: "#000000", // Highlight active tab
     },
-    badge: {
-        position: 'absolute',
-        top: -3,
-        right: -10,
-        backgroundColor: '#FF3366',
-        paddingHorizontal: 3,
-        paddingVertical: 1,
-        borderRadius: 10,
+    icon: {
+        paddingLeft: 10,
+        color: "#B0B0B0",
     },
-    badgeText: {
-        color: '#fff',
-        fontSize: 7,
-        fontWeight: 'bold',
-    },
-    notificationBadge: {
-        position: 'absolute',
-        top: -1,
-        right: -1,
-        width: 8,
-        height: 8,
-        backgroundColor: '#FF3366',
-        borderRadius: 4,
-    },
+    activeIcon: {
+        color: "#000000", // Make active icon black
+    }
 });

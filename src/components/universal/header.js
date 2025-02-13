@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     tabTitle: {
         fontSize: 18,
         fontWeight: "bold",
+        fontFamily: 'adihausdin_bold',  
     },
     rightIcons: {
         flexDirection: "row",

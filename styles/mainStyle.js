@@ -13,6 +13,24 @@ const {width, height} = Dimensions.get('window')
 
 export default StyleSheet.create({
 
+    baseText: {
+        fontFamily: 'AdihausDIN-Regular', // Use the font name as defined in the font file
+        color: COLORS.text,
+    },
+    product_title: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        fontFamily: 'AdihausDIN-Bold', // Use bold variant if available
+    },
+    title: {
+        fontSize: 32,
+        fontFamily: 'AdihausDIN-Regular',
+    },
+    searchTxt: {
+        fontSize: 18,
+        color: '#A9A9A9',
+        fontFamily: 'AdihausDIN-Regular',
+    },
     flsemi:{
         flex:0.5
     },
