@@ -14,6 +14,7 @@ import NewArrivalsGrid from '../components/universal/NewArrivalsGrid';
 import SuggestedProducts from '../components/universal/SuggestedProducts';
 import HybridList from '../components/universal/HybridList';
 import TopProductsCarousel from '../components/universal/TopProductCarousel';
+import ProductTile from '../components/universal/ProductTile'
 
 export default function Home() {
     return (
@@ -24,10 +25,11 @@ export default function Home() {
                 {/* <SearchBar /> */}
                 {/* <CategoryNav /> */}
                 {/* <PromotionalBanner /> */}
-                <ImageCardList />
                 <ProductGrid />
+                <ImageCardList />
                 <TopProductsCarousel />
                 <NewArrivalsGrid />
+                <ProductTile />
                 <HybridList />
                 <SuggestedProducts />
                 {/* <SponsorsSection /> */}

@@ -1,104 +1,153 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { Video } from 'expo-av';
+import ContentLoader, { Rect } from 'react-content-loader/native';
+import PremiumTouchable from './Pressable';
 
 const { width } = Dimensions.get('window');
 
-const ProductGrid = () => {
-    const products = [
-        {
-            id: '1',
-            name: 'Airwave Max 5',
-            description: 'Adaptive ANC | 80H Playtime',
-            originalPrice: '₹5,999',
-            discount: '16%',
-            salePrice: '₹4,499',
-            image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10.webp?v=1738306745',
-        },
-        {
-            id: '2',
-            name: 'NoiseFit Diva 2',
-            description: 'Amoled Display | Sleek Dial',
-            originalPrice: '₹6,999',
-            discount: '35%',
-            salePrice: '₹4,499',
-            image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34.webp?v=1738306745',
-        },
-        {
-            id: '3',
-            name: 'NoiseFit Diva',
-            description: '11" Amoled Diamond Design',
-            originalPrice: '₹7,999',
-            discount: '41%',
-            salePrice: 'Out of stock',
-            image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16.webp?v=1738558551',
-        }
-    ];
+const ProductGrid = ({ backgroundType = 'video' }) => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setProducts([
+                {
+                    id: '1',
+                    name: 'Airwave Max 5',
+                    description: 'Adaptive ANC | 80H Playtime',
+                    originalPrice: '₹5,999',
+                    discount: '16%',
+                    salePrice: '₹4,499',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10_100x.webp?v=1738306745',
+                },
+                {
+                    id: '2',
+                    name: 'NoiseFit Diva 2',
+                    description: 'Amoled Display | Sleek Dial',
+                    originalPrice: '₹6,999',
+                    discount: '35%',
+                    salePrice: '₹4,499',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34_100x.webp?v=1738306745',
+                },
+                {
+                    id: '3',
+                    name: 'NoiseFit Diva',
+                    description: '11" Amoled Diamond Design',
+                    originalPrice: '₹7,999',
+                    discount: '41%',
+                    salePrice: 'Out of stock',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16_100x.webp?v=1738558551',
+                }
+            ]);
+            setLoading(false);
+        }, 2000);
+    }, []);
 
     return (
         <View style={styles.container}>
-            {/* Background Image */}
-            <ImageBackground 
-                source={{ uri: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Slice_4Master_buds_M.webp?v=1739372266' }}  
-                style={styles.backgroundImage}
-            />
+            {/* Background (Image or Video) */}
+            {backgroundType === 'video' ? (
+                <Video
+                    source={{ uri: 'https://cdn.shopify.com/videos/c/o/v/32ca002305a54cf4969f415d066744e7.mp4' }} // Replace with actual video URL
+                    style={styles.backgroundVideo}
+                    resizeMode="cover"
+                    shouldPlay
+                    isLooping
+                />
+            ) : (
+                <ImageBackground
+                    source={{ uri: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Slice_4Master_buds_M.webp?v=1739372266' }}
+                    style={styles.backgroundImage}
+                />
+            )}
 
             {/* Foreground Content */}
             <View style={styles.overlay}>
-                {/* Section Heading */}
                 <View style={styles.header}>
                     <Text style={styles.heading}>JUST FOR YOU</Text>
-                    <TouchableOpacity style={styles.seeAllButton} >
+                    <PremiumTouchable onPress={() => console.log("See All Clicked")} style={styles.seeAllButton}>
                         <Text style={styles.seeAllText}>SEE ALL →</Text>
-                    </TouchableOpacity>
+                    </PremiumTouchable>
+
                 </View>
 
                 {/* Product Grid */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-                    {products.map((item) => (
-                        <View key={item.id} style={styles.card}>
-                            {/* Wishlist Heart Icon */}
-                            <TouchableOpacity style={styles.heartIcon}>
-                                <FontAwesome name="heart-o" size={18} color="black" />
-                            </TouchableOpacity>
-
-                            <Image source={{ uri: item.image }} style={styles.image} />
-                            <Text style={styles.name}>{item.name}</Text>
-                            <Text style={styles.description}>{item.description}</Text>
-                            <Text style={styles.originalPrice}>
-                                {item.originalPrice} <Text style={styles.discount}>{item.discount} off</Text>
-                            </Text>
-                            <Text style={styles.salePrice}>{item.salePrice}</Text>
-                        </View>
-                    ))}
+                    {loading
+                        ? Array(3).fill(0).map((_, index) => (
+                            <View key={index} style={styles.card}>
+                                <ProductPlaceholder />
+                            </View>
+                        ))
+                        : products.map((item) => (
+                            <View key={item.id} style={styles.card}>
+                                <TouchableOpacity style={styles.heartIcon}>
+                                    <FontAwesome name="heart-o" size={18} color="black" />
+                                </TouchableOpacity>
+                                <Image source={{ uri: item.image }} style={styles.image} />
+                                <Text style={styles.name}>{item.name}</Text>
+                                <Text style={styles.description}>{item.description}</Text>
+                                <Text style={styles.originalPrice}>
+                                    {item.originalPrice} <Text style={styles.discount}>{item.discount} off</Text>
+                                </Text>
+                                <Text style={styles.salePrice}>{item.salePrice}</Text>
+                            </View>
+                        ))}
                 </ScrollView>
             </View>
         </View>
     );
 };
 
+// Skeleton Loader
+const ProductPlaceholder = () => (
+    <ContentLoader
+        speed={1.5}
+        width={width * 0.4}
+        height={200}
+        viewBox={`0 0 ${width * 0.4} 200`}
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+    >
+        <Rect x="10" y="10" rx="10" ry="10" width="120" height="120" />
+        <Rect x="10" y="140" rx="4" ry="4" width="100" height="10" />
+        <Rect x="10" y="160" rx="4" ry="4" width="80" height="10" />
+        <Rect x="10" y="180" rx="4" ry="4" width="50" height="10" />
+    </ContentLoader>
+);
+
 const styles = StyleSheet.create({
     container: {
-        position: 'relative',  
+        position: 'relative',
         width: '100%',
     },
     backgroundImage: {
-        position: 'absolute', 
+        position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
-        height: 300,  
+        height: 550,
         resizeMode: 'cover',
     },
+    backgroundVideo: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: 550,
+    },
     overlay: {
-        paddingVertical: 20,
+        paddingTop: 180,
         paddingHorizontal: 15,
         position: 'relative',
-        zIndex: 10,  
+        zIndex: 10,
     },
     header: {
         paddingTop: 100,
-        alignItems: 'left', 
+        alignItems: 'left',
         marginBottom: 10,
     },
     heading: {
@@ -116,7 +165,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 1,
         shadowRadius: 0,
-        elevation: 5, 
+        elevation: 5,
         alignSelf: 'flex-start',
     },
     seeAllText: {
@@ -124,8 +173,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '400',
         textAlign: 'center',
-        fontFamily: 'Arial',
-    },    
+    },
     scrollContainer: {
         paddingBottom: 6,
     },
@@ -136,8 +184,7 @@ const styles = StyleSheet.create({
         marginRight: 7,
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#ddd',
-        elevation: 5,  
+        borderColor: '#eee',
     },
     heartIcon: {
         position: 'absolute',
@@ -176,7 +223,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#6a1b9a',
         marginTop: 5,
-    }
+    },
 });
 
 export default ProductGrid;

@@ -19,7 +19,7 @@ const Stack = createStackNavigator();
 const MyTabs = () => {
     return (
         <Tab.Navigator
-            initialRouteName="Home"
+            initialRouteName="Hello NOISEMAKER !"
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: styles.tabBar,
@@ -27,7 +27,7 @@ const MyTabs = () => {
             }}
         >
             <Tab.Screen 
-                name="Home" 
+                name="Hello NOISEMAKER !" 
                 component={Home}
                 options={{
                     tabBarIcon: ({ focused }) => (
