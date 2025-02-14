@@ -13,6 +13,7 @@ import ProductGrid from '../components/universal/ProductGrid';
 import NewArrivalsGrid from '../components/universal/NewArrivalsGrid';
 import SuggestedProducts from '../components/universal/SuggestedProducts';
 import HybridList from '../components/universal/HybridList';
+import TopProductsCarousel from '../components/universal/TopProductCarousel';
 
 export default function Home() {
     return (
@@ -25,6 +26,7 @@ export default function Home() {
                 {/* <PromotionalBanner /> */}
                 <ImageCardList />
                 <ProductGrid />
+                <TopProductsCarousel />
                 <NewArrivalsGrid />
                 <HybridList />
                 <SuggestedProducts />
