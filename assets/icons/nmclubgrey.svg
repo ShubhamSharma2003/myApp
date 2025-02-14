@@ -1,0 +1,10 @@
+<svg width="250" height="100" viewBox="0 0 250 100" xmlns="http://www.w3.org/2000/svg">
+
+  <rect x="20" y="30" width="50" height="50" fill="transparent" rx="10" ry="10"/>
+
+
+  <text x="35" y="70" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="grey">nm</text>
+
+
+  <text x="110" y="70" font-family="Georgia, serif" font-size="48" font-style="italic" font-weight="500" fill="grey" letter-spacing="-2">club</text>
+</svg>

@@ -26,8 +26,8 @@ export default function Home() {
                 {/* <CategoryNav /> */}
                 {/* <PromotionalBanner /> */}
                 <ProductGrid />
-                <ImageCardList />
                 <TopProductsCarousel />
+                <ImageCardList />
                 <NewArrivalsGrid />
                 <ProductTile />
                 <HybridList />

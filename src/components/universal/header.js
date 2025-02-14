@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
+import HeartIcon from "../../../assets/icons/heartIcon.svg"
 
 export default function Header() {
     const navigation = useNavigation();
@@ -14,7 +15,7 @@ export default function Header() {
                 <Text style={styles.tabTitle}>{currentRoute}</Text>
                 <View style={styles.rightIcons}>
                     <Icon name="notifications-outline" size={24} style={styles.icon} />
-                    <Icon name="heart-outline" size={24} style={styles.icon} />
+                    <HeartIcon width={24} height={24} />
                 </View>
             </View>
         </View>

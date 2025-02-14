@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import PremiumTouchable from './Pressable';
+import HeartIcon from "../../../assets/icons/heartIcon.svg"
 
 const { width } = Dimensions.get('window');
 
@@ -21,7 +22,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     originalPrice: '₹5,999',
                     discount: '16%',
                     salePrice: '₹4,499',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10_100x.webp?v=1738306745',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10.webp?v=1738306745',
                 },
                 {
                     id: '2',
@@ -30,7 +31,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     originalPrice: '₹6,999',
                     discount: '35%',
                     salePrice: '₹4,499',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34_100x.webp?v=1738306745',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34.webp?v=1738306745',
                 },
                 {
                     id: '3',
@@ -39,11 +40,11 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     originalPrice: '₹7,999',
                     discount: '41%',
                     salePrice: 'Out of stock',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16_100x.webp?v=1738558551',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16.webp?v=1738558551',
                 }
             ]);
             setLoading(false);
-        }, 2000);
+        }, 100);
     }, []);
 
     return (
@@ -85,7 +86,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                         : products.map((item) => (
                             <View key={item.id} style={styles.card}>
                                 <TouchableOpacity style={styles.heartIcon}>
-                                    <FontAwesome name="heart-o" size={18} color="black" />
+                                    <HeartIcon width={18} height={18} />
                                 </TouchableOpacity>
                                 <Image source={{ uri: item.image }} style={styles.image} />
                                 <Text style={styles.name}>{item.name}</Text>
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
     salePrice: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#6a1b9a',
+        color: '#000000',
         marginTop: 5,
     },
 });

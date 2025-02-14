@@ -1,4 +1,5 @@
-import { View, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Animated, StyleSheet } from 'react-native';
 import Icon from '@expo/vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,11 +11,32 @@ import Premium from './src/screens/Premium.js';
 import Profile from './src/screens/profile.js';
 import NoiseLogo from './assets/icons/noise3.svg';
 import NoiseLogo2 from './assets/icons/noiseGrey.svg';
-
-
+import HeartIcon from "./assets/icons/heartIcon.svg"
+import HeartIcon2 from "./assets/icons/heartIconGrey.svg"
+import nmclub from "./assets/icons/nmclub.svg"
+import nmclub2 from "./assets/icons/nmclubgrey.svg"
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+// 📌 Animated Icon Component
+const AnimatedTabIcon = ({ focused, defaultIcon: DefaultIcon, activeIcon: ActiveIcon, size }) => {
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        Animated.timing(scaleAnim, {
+            toValue: focused ? 1.2 : 1, // Zoom in when focused
+            duration: 200, // Smooth transition
+            useNativeDriver: true,
+        }).start();
+    }, [focused]);
+
+    return (
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+            {focused ? <ActiveIcon width={size} height={size} /> : <DefaultIcon width={size} height={size} />}
+        </Animated.View>
+    );
+};
 
 const MyTabs = () => {
     return (
@@ -31,15 +53,12 @@ const MyTabs = () => {
                 component={Home}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        focused ? (
-                            <View style={styles.imageContainer}>
-                                <NoiseLogo width={50} height={20} style={focused && styles.imageActive} />
-                            </View>
-                        ) : (
-                            <View style={styles.imageContainer}>
-                                <NoiseLogo2 width={50} height={20} style={focused && styles.imageActive} />
-                            </View>
-                        )
+                        <AnimatedTabIcon 
+                            focused={focused}
+                            defaultIcon={NoiseLogo2}
+                            activeIcon={NoiseLogo}
+                            size={50}
+                        />
                     ),
                 }}
             />
@@ -49,7 +68,9 @@ const MyTabs = () => {
                 component={categoryScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Icon name="search-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                        <Animated.View style={{ transform: [{ scale: focused ? 1.2 : 1 }] }}>
+                            <Icon name="search-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                        </Animated.View>
                     ),
                 }}
             />
@@ -58,7 +79,12 @@ const MyTabs = () => {
                 component={Premium}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Icon name="heart-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                        <AnimatedTabIcon 
+                            focused={focused}
+                            defaultIcon={HeartIcon2}
+                            activeIcon={HeartIcon}
+                            size={20}
+                        />
                     ),
                 }}
             />
@@ -67,7 +93,9 @@ const MyTabs = () => {
                 component={CartScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Icon name="bag-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                        <Animated.View style={{ transform: [{ scale: focused ? 1.2 : 1 }] }}>
+                            <Icon name="bag-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                        </Animated.View>
                     ),
                 }}
             />
@@ -76,7 +104,12 @@ const MyTabs = () => {
                 component={Profile}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Icon name="person-outline" size={20} style={[styles.icon, focused && styles.activeIcon]} />
+                        <AnimatedTabIcon 
+                            focused={focused}
+                            defaultIcon={nmclub2}
+                            activeIcon={nmclub}
+                            size={70}
+                        />
                     ),
                 }}
             />
@@ -102,31 +135,18 @@ export default function App() {
 const styles = StyleSheet.create({
     tabBar: {
         backgroundColor: '#fff',
-        borderTopWidth: 1,
+        borderTopWidth: 0,
         borderTopColor: '#f0f0f0',
-        height: 60, // Adjust height for better spacing
+        height: 60,
+        paddingLeft: 10,
         paddingBottom: 19, 
         paddingTop: 10,
-    },
-    imageContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingLeft: 20,
-        width: 100,  // Make image container larger
-        height: 60,
-    },
-    image: {
-        width: 50,  // Adjust for better spacing
-        height: 20,
-    },
-    imageActive: {
-        tintColor: "#000000", // Highlight active tab
+        paddingRight:10,
     },
     icon: {
-        paddingLeft: 10,
         color: "#B0B0B0",
     },
     activeIcon: {
-        color: "#000000", // Make active icon black
+        color: "#000000",
     }
 });

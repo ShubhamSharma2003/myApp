@@ -3,10 +3,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Animated, 
 import PremiumTouchable from './Pressable';
 
 const categories = [
-    { label: 'SHOP SMARTWATCH', imageSource: 'https://www.gonoise.com/cdn/shop/files/image_-_2025-02-13T113058.326_400x.png?v=1739426600' },
-    { label: 'SHOP AUDIO', imageSource: 'https://www.gonoise.com/cdn/shop/files/image_92_17c8cc35-4762-424a-a900-5e6efe91ca4f_400x.png?v=1738561848' },
-    { label: 'SHOP SPEAKERS', imageSource: 'https://www.gonoise.com/cdn/shop/files/image_-_2025-02-13T113058.326_400x.png?v=1739426600' },
-    { label: 'SHOP ACCESSORIES', imageSource: 'https://www.gonoise.com/cdn/shop/files/image_92_17c8cc35-4762-424a-a900-5e6efe91ca4f_400x.png?v=1738561848' },
+    { label: 'SHOP SMARTWATCH', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_1.png?v=1739523096' },
+    { label: 'SHOP AUDIO', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_2.png?v=1739523656' },
+    { label: 'SHOP SPEAKERS', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_1.png?v=1739523096' },
+    { label: 'SHOP ACCESSORIES', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_2.png?v=1739523656' },
 ];
 
 // Skeleton Loader Component
@@ -16,8 +16,8 @@ const SkeletonLoader = () => {
     useEffect(() => {
         Animated.loop(
             Animated.sequence([
-                Animated.timing(opacity, { toValue: 1, duration: 800, useNativeDriver: true }),
-                Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, duration: 500, useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 0.3, duration: 500, useNativeDriver: true }),
             ])
         ).start();
     }, []);
@@ -43,7 +43,7 @@ const ImageCardList = () => {
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false);
-        }, 2000); 
+        }, 500); 
     }, []);
 
     return (
@@ -52,7 +52,7 @@ const ImageCardList = () => {
                 <SkeletonLoader />
             ) : (
                 categories.map((item, index) => (
-                    <PremiumTouchable onPress={() => console.log("See All Clicked")} style={styles.seeAllButton}>
+                    <PremiumTouchable key={index} onPress={() => console.log("See All Clicked")} style={styles.seeAllButton}>
                         <Image source={{ uri: item.imageSource }} style={styles.image} resizeMode="cover" />
                         <View style={styles.overlay}>
                             {/* <Text style={styles.discount}>%</Text> */}
