@@ -1,17 +1,27 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Header from '../components/universal/header';
+import React from "react";
+import { View, ScrollView, SafeAreaView, Text, Dimensions } from 'react-native';
+import Header from "../components/universal/header";
+import CategoryNav from "../components/universal/CategoryNav";
+import ProductCarousel from "../components/universal/ProductCarousel";
+import ProductMini from "../components/universal/productmini";
+import { LinearGradient } from 'expo-linear-gradient';
+import styles from '../../styles/mainStyle';
 
-const AccountScreen = ({ navigation }) => {
+const { width } = Dimensions.get("window"); 
+
+
+
+export default function AccountScreen() {
     return (
-        <View style={styles.container}>
-            <Header />
-        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true}>
+                <Header />
+                
+            </ScrollView>
+        </SafeAreaView>
     );
+}
+
+const ProfileStyles = {
+
 };
-
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff' },
-});
-
-export default AccountScreen;

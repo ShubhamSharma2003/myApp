@@ -15,7 +15,7 @@ export default function Header() {
                 <Text style={styles.tabTitle}>{currentRoute}</Text>
                 <View style={styles.rightIcons}>
                     <Icon name="notifications-outline" size={24} style={styles.icon} />
-                    <HeartIcon width={24} height={24} />
+                    <Icon name="person-outline" size={24} style={styles.icon} />
                 </View>
             </View>
         </View>

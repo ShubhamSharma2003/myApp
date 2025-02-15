@@ -6,9 +6,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import CartScreen from './src/screens/CartScreen.js';
 import Home from './src/screens/home.js';
-import categoryScreen from './src/screens/categoryScreen.js';
+import CategoryScreen from './src/screens/categoryScreen.js';
 import Premium from './src/screens/Premium.js';
 import Profile from './src/screens/profile.js';
+import ProductPage from './src/components/product/ProductPage.js'; // Import ProductPage
 import NoiseLogo from './assets/icons/noise3.svg';
 import NoiseLogo2 from './assets/icons/noiseGrey.svg';
 import HeartIcon from "./assets/icons/heartIcon.svg"
@@ -38,6 +39,7 @@ const AnimatedTabIcon = ({ focused, defaultIcon: DefaultIcon, activeIcon: Active
     );
 };
 
+// 📌 Bottom Tab Navigator
 const MyTabs = () => {
     return (
         <Tab.Navigator
@@ -64,8 +66,8 @@ const MyTabs = () => {
             />
 
             <Tab.Screen 
-                name="Category" 
-                component={categoryScreen}
+                name="Shop" 
+                component={CategoryScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Animated.View style={{ transform: [{ scale: focused ? 1.2 : 1 }] }}>
@@ -117,21 +119,26 @@ const MyTabs = () => {
     );
 };
 
+// 📌 Main Stack Navigator (Includes ProductPage)
+const MainStack = () => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Home" component={MyTabs} />
+            <Stack.Screen name="ProductPage" component={ProductPage} />
+        </Stack.Navigator>
+    );
+};
+
+// 📌 App Component
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
-                <Stack.Screen 
-                    name="Home" 
-                    component={MyTabs} 
-                    options={{ headerShown: false }} 
-                />
-            </Stack.Navigator>
+            <MainStack />
         </NavigationContainer>
     );
 }
 
-// ✅ **Updated Styles**
+// ✅ Styles
 const styles = StyleSheet.create({
     tabBar: {
         backgroundColor: '#fff',

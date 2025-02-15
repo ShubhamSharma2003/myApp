@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import PremiumTouchable from './Pressable';
-import HeartIcon from "../../../assets/icons/heartIcon.svg"
+import HeartIcon from "../../../assets/icons/heartIcon.svg";
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 const ProductGrid = ({ backgroundType = 'video' }) => {
+    const navigation = useNavigation(); // Get navigation instance
+
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -49,10 +51,9 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
 
     return (
         <View style={styles.container}>
-            {/* Background (Image or Video) */}
             {backgroundType === 'video' ? (
                 <Video
-                    source={{ uri: 'https://cdn.shopify.com/videos/c/o/v/32ca002305a54cf4969f415d066744e7.mp4' }} // Replace with actual video URL
+                    source={{ uri: 'https://cdn.shopify.com/videos/c/o/v/32ca002305a54cf4969f415d066744e7.mp4' }}
                     style={styles.backgroundVideo}
                     resizeMode="cover"
                     shouldPlay
@@ -65,17 +66,14 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                 />
             )}
 
-            {/* Foreground Content */}
             <View style={styles.overlay}>
                 <View style={styles.header}>
                     <Text style={styles.heading}>JUST FOR YOU</Text>
                     <PremiumTouchable onPress={() => console.log("See All Clicked")} style={styles.seeAllButton}>
                         <Text style={styles.seeAllText}>SEE ALL →</Text>
                     </PremiumTouchable>
-
                 </View>
 
-                {/* Product Grid */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
                     {loading
                         ? Array(3).fill(0).map((_, index) => (
@@ -84,7 +82,11 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                             </View>
                         ))
                         : products.map((item) => (
-                            <View key={item.id} style={styles.card}>
+                            <TouchableOpacity 
+                                key={item.id} 
+                                style={styles.card} 
+                                onPress={() => navigation.navigate('ProductPage', { product: item })} // ✅ Fixed navigation
+                            >
                                 <TouchableOpacity style={styles.heartIcon}>
                                     <HeartIcon width={18} height={18} />
                                 </TouchableOpacity>
@@ -95,7 +97,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                                     {item.originalPrice} <Text style={styles.discount}>{item.discount} off</Text>
                                 </Text>
                                 <Text style={styles.salePrice}>{item.salePrice}</Text>
-                            </View>
+                            </TouchableOpacity>
                         ))}
                 </ScrollView>
             </View>
