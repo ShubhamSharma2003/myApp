@@ -141,6 +141,7 @@ export default function App() {
 // ✅ Styles
 const styles = StyleSheet.create({
     tabBar: {
+        position: 'absolute',
         backgroundColor: '#fff',
         borderTopWidth: 0,
         borderTopColor: '#f0f0f0',
@@ -148,6 +149,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingBottom: 19, 
         paddingTop: 10,
+        height: 80, 
         paddingRight:10,
     },
     icon: {

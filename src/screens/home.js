@@ -15,6 +15,7 @@ import SuggestedProducts from '../components/universal/SuggestedProducts';
 import HybridList from '../components/universal/HybridList';
 import TopProductsCarousel from '../components/universal/TopProductCarousel';
 import ProductTile from '../components/universal/ProductTile'
+import CardStackCarousal from '../components/universal/CardStackCarousal';
 
 export default function Home() {
     return (
@@ -34,6 +35,9 @@ export default function Home() {
                 <SuggestedProducts />
                 {/* <SponsorsSection /> */}
                 {/* <ImageCarousel /> */}
+                <View style={styles.carouselContainer}>
+                    <CardStackCarousal />
+                </View>
                 {/* <ProductCarousel /> */}
                 {/* <CallToAction /> */}
             </ScrollView>
@@ -48,6 +52,10 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         flexGrow: 1,
-        paddingTop: 10,
+        paddingTop: 100,
+    },
+    carouselContainer: {
+        height: 600,
+        marginBottom:100, // Set a fixed height for the carousel to prevent it from expanding
     },
 });
