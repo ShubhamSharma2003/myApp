@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators, TransitionSpecs } from '@react-navigation/stack';
 import Home from '../screens/home';
 import CategoryScreen from '../screens/categoryScreen';
 import ProductPage from '../components/product/ProductPage';
@@ -10,10 +10,17 @@ export default function MainStack() {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
-                gestureEnabled: true,
-                gestureDirection: 'horizontal',
-                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                headerShown: false, // Hides the header globally
+                gestureEnabled: true, // Enables gestures (swipe to go back)
+                gestureDirection: 'horizontal', // Horizontal swipe to go back
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // Sliding effect
+                transitionSpec: {
+                    open: TransitionSpecs.RevealFromBottomAndroid, // Transition for opening the screen
+                    close: {
+                        ...TransitionSpecs.FadeOutToBottomAndroid,
+                        duration: 600, 
+                    },
+                },
             }}
         >
             <Stack.Screen name="Home" component={Home} />
@@ -21,7 +28,10 @@ export default function MainStack() {
             <Stack.Screen
                 name="ProductPage"
                 component={ProductPage}
-                options={{ headerShown: false, presentation: 'modal' }} // Hide Header & Tabs
+                options={{
+                    headerShown: false, // Hide header for this screen
+                    presentation: 'modal', // Optional: Use modal presentation style for product page
+                }}
             />
         </Stack.Navigator>
     );
