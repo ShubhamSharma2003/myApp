@@ -11,6 +11,8 @@ import CardStackCarousal from '../universal/CardStackCarousal';
 import VerticalImageSlider from '../../components/universal/VerticalScroll';
 import ProductRating from './ProductRating';
 import ProductTileLarge from '../../components/universal/ProductTileLarge';
+import VideoBanner from '../universal/VideoBanner';
+import ImageBanner from '../universal/ImageBanner';
 
 const ProductPage = () => {
   const route = useRoute();
@@ -196,7 +198,8 @@ const ProductPage = () => {
             </View>
         </View>
 
-     
+        <VideoBanner />
+        <ImageBanner />
 
         <ProductTilePlain />
 
@@ -204,7 +207,8 @@ const ProductPage = () => {
         <CardStackCarousal />
         </View>
 
-        <ProductTileLarge />
+        {/* <ProductTileLarge /> */}
+        
 
         <ProductRating />
 

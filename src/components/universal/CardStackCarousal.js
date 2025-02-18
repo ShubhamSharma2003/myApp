@@ -29,31 +29,25 @@ const DATA = [
     title: 'Sound By BOSE',
     location: 'Out of the World Sound',
     poster:
-      'https://cdn.shopify.com/s/files/1/0997/6284/files/Slice_9Master_buds_M.webp?v=1739372267',
-  },
-  {
-    title: 'Made for Everyone',
-    location: 'Rugged and Strong',
-    poster:
-      'https://cdn.shopify.com/s/files/1/0997/6284/files/14_0b91786b-3c78-4287-bc3a-9f6740edb912.webp?v=1738511548',
+      'https://www.gonoise.com/cdn/shop/files/Slice_2_pro6max_M.webp?v=1737567340',
   },
   {
     title: 'All weather Proof',
     location: 'Realtime Tracking',
     poster:
-      'https://cdn.shopify.com/s/files/1/0997/6284/files/Cadet_UI_Mobile_09.jpg?v=1738242039',
+      'https://www.gonoise.com/cdn/shop/files/Slice_17_pro6max_M.webp?v=1737567341',
   },
   {
     title: 'DIVA by NOISE',
     location: 'Beautiful & Eligant',
     poster:
-      'https://cdn.shopify.com/s/files/1/0997/6284/files/shine_by_noise_phone.png?v=1738316567',
+      'https://www.gonoise.com/cdn/shop/files/Slice_11_pro6max_M.webp?v=1737567341',
   },
   {
     title: '24HR Connectivity',
     location: 'Long lasting battery',
     poster:
-      'https://cdn.shopify.com/s/files/1/0997/6284/files/1_392315a4-3f47-4b34-b2fb-c81a8c80885d.png?v=1738242524',
+      'https://cdn.shopify.com/s/files/1/0997/6284/files/Slice_3_1.png?v=1739870104',
   },
 ];
 
@@ -61,7 +55,7 @@ const OVERFLOW_HEIGHT = 70;
 const SPACING = 10;
 const VISIBLE_ITEMS = 3;
 const ITEM_WIDTH = width * 0.8;
-const ITEM_HEIGHT = ITEM_WIDTH * 1.7;
+const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
 
 const OverflowItems = ({ scrollX, data }) => {
   const translateY = scrollX.interpolate({
@@ -79,12 +73,6 @@ const OverflowItems = ({ scrollX, data }) => {
               </Text>
               <View style={styles.itemContainerRow}>
                 <Text style={[styles.location]}>
-                  {/* <EvilIcons
-                    name='location'
-                    size={16}
-                    color='black'
-                    style={{ marginRight: 5 }}
-                  /> */}
                   {item.location}
                 </Text>
               </View>
@@ -222,23 +210,23 @@ export default function CardStackCarousal() {
 
 const styles = StyleSheet.create({
   container: {
-    padding:20,
+    padding:10,
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#fff',
-    // height: 100,p
+    
   },
   title: {
     fontSize: 28,
     fontWeight: '900',
     textTransform: 'uppercase',
     letterSpacing: -1,
+    paddingLeft:10,
   },
   location: {
     fontSize: 16,
-  },
-  date: {
-    fontSize: 12,
+    paddingLeft:10,
+
   },
   itemContainer: {
     height: OVERFLOW_HEIGHT,
@@ -247,6 +235,7 @@ const styles = StyleSheet.create({
   itemContainerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: 20,
     alignItems: 'center',
   },
 });
