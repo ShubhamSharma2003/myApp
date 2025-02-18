@@ -10,6 +10,7 @@ import ProductHeader from './ProductHeader';
 import CardStackCarousal from '../universal/CardStackCarousal';
 import VerticalImageSlider from '../../components/universal/VerticalScroll';
 import ProductRating from './ProductRating';
+import ProductTileLarge from '../../components/universal/ProductTileLarge';
 
 const ProductPage = () => {
   const route = useRoute();
@@ -123,8 +124,9 @@ const ProductPage = () => {
           <Text style={styles.description}>{product.description}</Text>
           <View style={styles.priceContainer}>
             <View style={styles.priceRow}>
-              <Text style={styles.originalPrice}>{product.originalPrice}</Text>
               <Text style={styles.salePrice}>{product.salePrice}</Text>
+              <Text style={styles.originalPrice}>{product.originalPrice}</Text>
+              <Text style={styles.discountText}>10% OFF</Text>
             </View>
           </View>
         </View>
@@ -202,7 +204,7 @@ const ProductPage = () => {
         <CardStackCarousal />
         </View>
 
-        <ProductTilePlain />
+        <ProductTileLarge />
 
         <ProductRating />
 
@@ -239,26 +241,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
 
   },
-  variantScroll: {paddingBottom: 10,paddingTop:10, paddingLeft:20, flexDirection: "row", backgroundColor: '#eee'},
-    variantButton: { paddingRight: 20, overflow: "hidden", },
-    variantImage: { width: 60, height: 60, resizeMode: "cover",},
+  variantScroll: { flexDirection: "row", backgroundColor: '#eaf0f0' , paddingHorizontal:10 },
+    variantButton: {padding: 10, overflow: "hidden"},
+    variantImage: { width: 65, height: 65, resizeMode: "cover",},
     activeVariantButton: {
-      borderBottomWidth: 2,
-      width:80,
-      paddingBottom:5,
-      borderBottomColor: '#777',
+      borderBottomWidth: 3,
+      borderBottomColor: '#000',
     },
   details: { padding: 20 },
   title: { fontSize: 22, fontWeight: "bold" },
   description: { fontSize: 16, color: "gray", marginBottom: 5 },
   priceContainer: { flexDirection: "row", justifyContent: "space-between", padding: 1 },
   priceRow: { flexDirection: 'row', alignItems: 'center' },
-  originalPrice: { textDecorationLine: 'line-through', color: '#777', fontSize: 12, marginRight: 10 },
+  originalPrice: { textDecorationLine: 'line-through', color: '#777', fontSize: 12, marginLeft: 10 },
+  discountText: { fontSize: 12, color: 'green', marginLeft: 10 },
   salePrice: { fontSize: 16, fontWeight: 'bold', color: '#000000' },
   discountContainer: { flexDirection: "row", justifyContent: "space-between", padding: 10, borderBottomWidth: 1, borderTopWidth: 1, borderColor: "#000", backgroundColor: "#fff" },
   emiText: { fontSize: 12, color: "#666" },
   detailsText: { fontSize: 12, color: "#000" },
-  addToBagButton: { flexDirection: "row", backgroundColor: "black", padding: 15, alignItems: "center", justifyContent: "center", margin: 20, marginBottom: 0 },
+  addToBagButton: { flexDirection: "row", backgroundColor: "black", padding: 15, alignItems: "center", justifyContent: "center", marginLeft: 20, marginRight:20, marginBottom: 0 },
   bagIcon: { marginLeft: 200 },
   addToBagText: { color: "white", fontSize: 16, fontWeight: "bold" },
   deliveryContainer: { padding: 20 },

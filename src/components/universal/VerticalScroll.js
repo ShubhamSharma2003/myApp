@@ -4,13 +4,6 @@ import { View, ScrollView, Image, Dimensions, StyleSheet, TouchableOpacity } fro
 const containerHeight = 480;
 const containerWidth = Dimensions.get('window').width;
 
-// const images = [
-//   { id: 1, url: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10.webp?v=1738306745' },
-//   { id: 2, url: 'https://www.gonoise.com/cdn/shop/files/Artboard_9.webp?v=1738306745' },
-//   { id: 3, url: 'https://www.gonoise.com/cdn/shop/files/Artboard_12.webp?v=1738306745' },
-//   { id: 4, url: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10.webp?v=1738306745' },
-//   { id: 5, url: 'https://www.gonoise.com/cdn/shop/files/Artboard_9.webp?v=1738306745' },
-// ];
 
 const VerticalImageSlider = ({ images = [] }) => {
   const scrollViewRef = useRef(null);
@@ -81,7 +74,7 @@ const styles = StyleSheet.create({
     height: containerHeight,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eee',
+    backgroundColor: '#eaf0f0',
   },
   image: {
     width: 400,
