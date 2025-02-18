@@ -8,21 +8,29 @@ import Feather from '@expo/vector-icons/Feather';
 import ProductTilePlain from '../../components/universal/ProductTilePlain';
 import ProductHeader from './ProductHeader';
 import CardStackCarousal from '../universal/CardStackCarousal';
-import VerticalImageSlider from '../../components/universal/VerticalScroll'; // Updated image slider
+import VerticalImageSlider from '../../components/universal/VerticalScroll';
+import ProductRating from './ProductRating';
 
 const ProductPage = () => {
   const route = useRoute();
   // (Define your image URLs and product data as before)
-  const imageUrl = "https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10.webp?v=1738306745";
-  const imageUrl1 = "https://www.gonoise.com/cdn/shop/files/Artboard_40.webp?v=1738306745";
-    const imageUrl2 = "https://www.gonoise.com/cdn/shop/files/Artboard_52.webp?v=1738306745";
-    const imageUrl3 = "https://www.gonoise.com/cdn/shop/files/Artboard_46.webp?v=1738306745";
-    const imageUrl4 = "https://www.gonoise.com/cdn/shop/files/Artboard_22.webp?v=1738306745";
-    const imageUrl5 = "https://www.gonoise.com/cdn/shop/files/Artboard_8.webp?v=1738306745";
-    const imageUrl6 = "https://www.gonoise.com/cdn/shop/files/Artboard_9.webp?v=1738306745";
-    const imageUrl7 = "https://www.gonoise.com/cdn/shop/files/Artboard_12.webp?v=1738306745";
+  const imageUrl11 = "https://www.gonoise.com/cdn/shop/files/5_debf6487-e016-42fa-9731-6abff3721427.webp?v=1721364459";
+  const imageUrl12 = "https://www.gonoise.com/cdn/shop/files/4_344ca49c-c4a9-44a5-b34e-7aa4a40d87ef.webp?v=1721364460";
+  const imageUrl13 = "https://www.gonoise.com/cdn/shop/files/2_4d8489ad-5bcd-4a39-98ea-1328e084a9f3.webp?v=1721364459";
+  const imageUrl14 = "https://www.gonoise.com/cdn/shop/files/2_4d8489ad-5bcd-4a39-98ea-1328e084a9f3.webp?v=1721364459";
+  const imageUrl21 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-1_5a47cb71-4d70-4ca0-92d2-905d36be5242.webp?v=1725621304?width=600";
+  const imageUrl22 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-2_2c6b8bcc-4ff5-4d72-b3dd-19b79e591351.webp?v=1725621303?width=600";
+  const imageUrl23 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-5_5d8b0c53-8efb-4927-bbdc-241da07d455a.webp?v=1725621303?width=600";
+  const imageUrl24 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-3_b2b56d3d-0144-4fe5-86c3-e1577052265d.webp?v=1725621303?width=600";
+  const imageUrl31 = "https://www.gonoise.com/cdn/shop/files/1_ecb6bab3-7552-4d31-a0bb-833b19044577.png?v=1716538343";
+  const imageUrl32 = "https://www.gonoise.com/cdn/shop/files/5_3cf0e0ba-6c51-4a11-91eb-100a9fd64630.png?v=1716538337";
+  const imageUrl33 = "https://www.gonoise.com/cdn/shop/files/8_b47d2f17-a9c5-4320-b260-41d301c8c0e2.png?v=1716538341";
+  const imageUrl34 = "https://www.gonoise.com/cdn/shop/files/7_f387af89-7c11-4a85-a371-e11920815e39.png?v=1716538340";
+  const imageUrl41 = "https://www.gonoise.com/cdn/shop/files/Artboard_26_pro6max.webp?v=1739277875";
+  const imageUrl42 = "https://www.gonoise.com/cdn/shop/files/Artboard_8_pro6max.webp?v=1739277875";
+  const imageUrl43 = "http://www.gonoise.com/cdn/shop/files/Artboard_33_pro6max.webp?v=1739277875";
+  const imageUrl44 = "https://www.gonoise.com/cdn/shop/files/Artboard_16_pro6max.webp?v=1739277875";
 
-  // ... other image URLs
 
   const product = {
     id: route.params?.product?.id || 'demo',
@@ -31,43 +39,84 @@ const ProductPage = () => {
     originalPrice: route.params?.product?.originalPrice || '₹9,999',
     discount: route.params?.product?.discount || '20%',
     salePrice: route.params?.product?.salePrice || '₹7,999',
-    image: imageUrl,
+    image: imageUrl11,
     images: route.params?.product?.images?.length > 0 
       ? route.params.product.images 
-      : [imageUrl], // Simplified for clarity
+      : [imageUrl11], // Simplified for clarity
     variants: route.params?.product?.variants?.length > 0 
       ? route.params.product.variants 
       : [
-          { id: '1', image: imageUrl },
-          { id: '2', image: imageUrl2 },
-            { id: '3', image: imageUrl3 },
-            { id: '4', image: imageUrl4 },
-            { id: '5', image: imageUrl3 },
-
+        { 
+          id: '1', 
+          images: [imageUrl11, imageUrl12, imageUrl13, imageUrl14],
+        },
+        { 
+          id: '2', 
+          images: [imageUrl21, imageUrl22, imageUrl23, imageUrl24] ,
+        },
+        { 
+          id: '3', 
+          images: [imageUrl31, imageUrl32, imageUrl33, imageUrl34] , 
+        },
+        { 
+          id: '4', 
+          images: [imageUrl41, imageUrl42, imageUrl43, imageUrl44] , 
+        }
+        ,
+        { 
+          id: '5', 
+          images: [imageUrl11, imageUrl12, imageUrl13, imageUrl14] ,
+        }
+        ,
+        { 
+          id: '6', 
+          images: [imageUrl21, imageUrl22, imageUrl23, imageUrl24] , 
+        }
         ],
   };
 
+  const [selectedImages, setSelectedImages] = useState(product.variants[0].images);
+  const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
+
+
+  const handleVariantSelect = (variant) => {
+    if (variant && Array.isArray(variant.images) && variant.images.length > 0) {
+      setSelectedImages(variant.images); 
+      setSelectedVariantId(variant.id);
+    } else {
+      console.log('Variant is undefined or does not have images', variant); // Log the variant for debugging
+      setSelectedImages([imageUrl11]); 
+    }
+  };
+  
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* Outer ScrollView that wraps the entire page */}
+
       <ScrollView nestedScrollEnabled={true} style={{ flex: 1 }} stickyHeaderIndices={[0, 2]}>
         
         <ProductHeader />
-        {/* Image container with fixed height containing our vertical image slider */}
         <View style={styles.imageContainer}>
-          <VerticalImageSlider />
+         <VerticalImageSlider images={selectedImages.map((img, index) => ({ id: index, url: img }))} />
+
         </View>
         
         <View style={styles.stickyHeader}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.variantScroll}>
-                {product.variants.map((variant) => (
-                    <TouchableOpacity key={variant.id} style={styles.variantButton}>
-                        <Image source={{ uri: variant.image }} style={styles.variantImage} />
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.variantScroll}>
+          {product.variants.map((variant) => (
+            <TouchableOpacity
+              key={variant.id}
+              onPress={() => handleVariantSelect(variant)}
+              style={[
+                styles.variantButton,
+                selectedVariantId === variant.id && styles.activeVariantButton // Apply active style
+              ]}
+            >
+              <Image source={{ uri: variant.images[0] }} style={styles.variantImage} />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
         </View>
-
         {/* The rest of your product content */}
         <View style={styles.details}>
           <Text style={styles.title}>{product.name}</Text>
@@ -79,6 +128,7 @@ const ProductPage = () => {
             </View>
           </View>
         </View>
+
 
 
         <TouchableOpacity style={styles.addToBagButton}>
@@ -144,11 +194,17 @@ const ProductPage = () => {
             </View>
         </View>
 
+     
+
         <ProductTilePlain />
 
         <View style={{ height: '600', width:'100%' }}>
         <CardStackCarousal />
         </View>
+
+        <ProductTilePlain />
+
+        <ProductRating />
 
         {/* Questions & FAQ Section */}
         <View style={styles.faqContainer}>
@@ -170,6 +226,7 @@ const ProductPage = () => {
             </View>
           </View>
         </View>
+       
 
       </ScrollView>
     </SafeAreaView>
@@ -182,9 +239,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
 
   },
-  variantScroll: {paddingBottom: 10, paddingHorizontal: 16, flexDirection: "row", backgroundColor: '#eee', },
-    variantButton: { paddingRight: 30, overflow: "hidden" },
-    variantImage: { width: 90, height: 90, resizeMode: "cover" },
+  variantScroll: {paddingBottom: 10,paddingTop:10, paddingLeft:20, flexDirection: "row", backgroundColor: '#eee'},
+    variantButton: { paddingRight: 20, overflow: "hidden", },
+    variantImage: { width: 60, height: 60, resizeMode: "cover",},
+    activeVariantButton: {
+      borderBottomWidth: 2,
+      width:80,
+      paddingBottom:5,
+      borderBottomColor: '#777',
+    },
   details: { padding: 20 },
   title: { fontSize: 22, fontWeight: "bold" },
   description: { fontSize: 16, color: "gray", marginBottom: 5 },
@@ -211,7 +274,7 @@ const styles = StyleSheet.create({
     warrantyContainer: { flexDirection: "row", justifyContent: "space-around", padding: 20, },
     warrantyItem: { flexDirection: "col", alignItems: "center" },
     warrantyText: { marginLeft: 8, fontSize: 10, color: "#000" },
-  faqContainer: { padding: 20 },
+  faqContainer: { padding: 20,paddingTop: 10, backgroundColor:'#fff' },
   faqTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   faqRow: { flexDirection: "row", justifyContent: "space-around", width: "100%" },
   faqItem: { alignItems: "center" },

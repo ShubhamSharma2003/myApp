@@ -35,9 +35,7 @@ export default function Home() {
                 <SuggestedProducts />
                 {/* <SponsorsSection /> */}
                 {/* <ImageCarousel /> */}
-                <View style={styles.carouselContainer}>
-                    <CardStackCarousal />
-                </View>
+                {/* <CardStackCarousal /> */}
                 {/* <ProductCarousel /> */}
                 {/* <CallToAction /> */}
             </ScrollView>
@@ -47,15 +45,8 @@ export default function Home() {
 
 const styles = StyleSheet.create({
     safeArea: {
-        flex: 1,
+        // flex: 1,
         backgroundColor: '#fff',
     },
-    scrollView: {
-        flexGrow: 1,
-        paddingTop: 100,
-    },
-    carouselContainer: {
-        height: 600,
-        marginBottom:100, // Set a fixed height for the carousel to prevent it from expanding
-    },
+
 });

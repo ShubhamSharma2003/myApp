@@ -82,11 +82,13 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flexDirection: 'row',
         padding: 20,
+        
     },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         marginLeft: 20,
+        paddingTop: 20,
         color: '#000',
     },
     card: {
