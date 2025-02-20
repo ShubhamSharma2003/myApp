@@ -15,13 +15,18 @@ import {
   FlingGestureHandler,
   Directions,
 } from 'react-native-gesture-handler';
+
 const { width } = Dimensions.get('screen');
-import { EvilIcons } from '@expo/vector-icons';
+const OVERFLOW_HEIGHT = 70;
+const SPACING = 10;
+const VISIBLE_ITEMS = 3;
+const ITEM_WIDTH = width * 0.8;
+const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
 
 const DATA = [
   {
     title: 'Noise Master Buds',
-    location: 'Sound by bose',
+    location: 'Sound by Bose',
     poster:
       'https://cdn.shopify.com/s/files/1/0997/6284/files/Slice_10Master_buds_D.webp?v=1739372267',
   },
@@ -32,53 +37,44 @@ const DATA = [
       'https://www.gonoise.com/cdn/shop/files/Slice_2_pro6max_M.webp?v=1737567340',
   },
   {
-    title: 'All weather Proof',
+    title: 'All Weather Proof',
     location: 'Realtime Tracking',
     poster:
       'https://www.gonoise.com/cdn/shop/files/Slice_17_pro6max_M.webp?v=1737567341',
   },
   {
     title: 'DIVA by NOISE',
-    location: 'Beautiful & Eligant',
+    location: 'Beautiful & Elegant',
     poster:
       'https://www.gonoise.com/cdn/shop/files/Slice_11_pro6max_M.webp?v=1737567341',
   },
   {
     title: '24HR Connectivity',
-    location: 'Long lasting battery',
+    location: 'Long-lasting battery',
     poster:
       'https://cdn.shopify.com/s/files/1/0997/6284/files/Slice_3_1.png?v=1739870104',
   },
 ];
-
-const OVERFLOW_HEIGHT = 70;
-const SPACING = 10;
-const VISIBLE_ITEMS = 3;
-const ITEM_WIDTH = width * 0.8;
-const ITEM_HEIGHT = ITEM_WIDTH * 1.5;
 
 const OverflowItems = ({ scrollX, data }) => {
   const translateY = scrollX.interpolate({
     inputRange: [-1, 0, 1],
     outputRange: [OVERFLOW_HEIGHT, 0, -OVERFLOW_HEIGHT],
   });
+
   return (
     <View style={{ height: OVERFLOW_HEIGHT, overflow: 'hidden' }}>
       <Animated.View style={{ transform: [{ translateY }] }}>
-        {data.map((item, index) => {
-          return (
-            <Animated.View key={index} style={styles.itemContainer}>
-              <Text style={[styles.title]} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <View style={styles.itemContainerRow}>
-                <Text style={[styles.location]}>
-                  {item.location}
-                </Text>
-              </View>
-            </Animated.View>
-          );
-        })}
+        {data.map((item, index) => (
+          <Animated.View key={index} style={styles.itemContainer}>
+            <Text style={styles.title} numberOfLines={1}>
+              {item.title}
+            </Text>
+            <View style={styles.itemContainerRow}>
+              <Text style={styles.location}>{item.location}</Text>
+            </View>
+          </Animated.View>
+        ))}
       </Animated.View>
     </View>
   );
@@ -88,14 +84,16 @@ export default function CardStackCarousal() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const scrollXAnimated = React.useRef(new Animated.Value(0)).current;
   const [index, setIndex] = React.useState(0);
-  const [data, setData] = React.useState(DATA);
 
-  const setAnimatedIndex = React.useCallback((i) => {
-    setIndex(i);
-    scrollX.setValue(i);
-  }, []);
+  const setAnimatedIndex = React.useCallback(
+    (i) => {
+      const newIndex = (i + DATA.length) % DATA.length; // Loop logic
+      setIndex(newIndex);
+      scrollX.setValue(newIndex);
+    },
+    [scrollX]
+  );
 
-  // interconnected animations aka reactive animations :D
   React.useEffect(() => {
     Animated.spring(scrollXAnimated, {
       toValue: scrollX,
@@ -103,24 +101,11 @@ export default function CardStackCarousal() {
     }).start();
   });
 
-  // React.useEffect(() => {
-  //   if (index === data.length - VISIBLE_ITEMS - 2) {
-  //     console.log('fetch more')
-  //     const newData = [...data, ...data];
-
-  //     setData(newData);
-  //   }
-  // }, [index]);
-
   return (
     <FlingGestureHandler
       direction={Directions.LEFT}
       onHandlerStateChange={(e) => {
         if (e.nativeEvent.state === State.END) {
-          if (index === data.length - 1) {
-            // setAnimatedIndex(0)
-            return;
-          }
           setAnimatedIndex(index + 1);
         }
       }}
@@ -129,19 +114,15 @@ export default function CardStackCarousal() {
         direction={Directions.RIGHT}
         onHandlerStateChange={(e) => {
           if (e.nativeEvent.state === State.END) {
-            if (index === 0) {
-              // setAnimatedIndex(data.length - 1)
-              return;
-            }
             setAnimatedIndex(index - 1);
           }
         }}
       >
         <SafeAreaView style={styles.container}>
           <StatusBar hidden />
-          <OverflowItems scrollX={scrollXAnimated} data={data} />
+          <OverflowItems scrollX={scrollXAnimated} data={DATA} />
           <FlatList
-            data={data}
+            data={DATA}
             keyExtractor={(_, index) => String(index)}
             scrollEnabled={false}
             inverted
@@ -155,13 +136,8 @@ export default function CardStackCarousal() {
             CellRendererComponent={({ children, index, style, ...props }) => {
               const cellStyle = [
                 style,
-
-                // I want each item to have a higher zIndex than the previous one,
-                // in reversed order due to the FlatList being inverted
-                { zIndex: data.length - index },
+                { zIndex: DATA.length - index },
               ];
-
-              // OverflowableView for Android...
               return (
                 <View style={cellStyle} index={index} {...props}>
                   {children}
@@ -182,6 +158,7 @@ export default function CardStackCarousal() {
                 inputRange,
                 outputRange: [0.8, 1, 1.3],
               });
+
               return (
                 <Animated.View
                   style={{
@@ -210,7 +187,7 @@ export default function CardStackCarousal() {
 
 const styles = StyleSheet.create({
   container: {
-    padding:10,
+    padding: 10,
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#fff',
@@ -221,12 +198,11 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     textTransform: 'uppercase',
     letterSpacing: -1,
-    paddingLeft:10,
+    paddingLeft: 10,
   },
   location: {
     fontSize: 16,
-    paddingLeft:10,
-
+    paddingLeft: 10,
   },
   itemContainer: {
     height: OVERFLOW_HEIGHT,

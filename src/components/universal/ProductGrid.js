@@ -46,7 +46,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                 }
             ]);
             setLoading(false);
-        }, 100);
+        }, 500);
     }, []);
 
     return (
