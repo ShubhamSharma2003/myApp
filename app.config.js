@@ -17,12 +17,15 @@ export default {
     updates: {
       fallbackToCacheTimeout: 0
     },
-    assetBundlePatterns: ['**/*'],
+    assetBundlePatterns: [
+      "**/*",
+      "assets/fonts/*" // ✅ Ensure fonts are bundled
+    ],
     ios: {
       bundleIdentifier: 'com.gonoise.ecommerce',
       supportsTablet: true,
       infoPlist: {
-        ITSAppUsesNonExemptEncryption: false  // ✅ Add this line
+        ITSAppUsesNonExemptEncryption: false
       }
     },
     android: {
@@ -44,4 +47,4 @@ export default {
       }
     }
   }
-}
+};

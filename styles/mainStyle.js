@@ -44,7 +44,8 @@ export default StyleSheet.create({
         flex:3
     },
     product_title:{
-        fontWeight:'bold',fontSize:18
+        fontFamily: 'AdihausDIN-Bold',
+        fontSize:18
     }
     ,
     bd:{

@@ -33,6 +33,7 @@ export default function MainStack() {
                     presentation: 'modal', // Optional: Use modal presentation style for product page
                 }}
             />
+            
         </Stack.Navigator>
     );
 }

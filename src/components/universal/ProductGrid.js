@@ -19,12 +19,12 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
             setProducts([
                 {
                     id: '1',
-                    name: 'Airwave Max 5',
-                    description: 'Adaptive ANC | 80H Playtime',
+                    name: 'ColorFit Pro 6',
+                    description: 'AI Create | Amoled Display',
                     originalPrice: '₹5,999',
                     discount: '16%',
                     salePrice: '₹4,499',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10.webp?v=1738306745',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10_500x_1.webp?v=1740026963',
                 },
                 {
                     id: '2',
@@ -33,7 +33,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     originalPrice: '₹6,999',
                     discount: '35%',
                     salePrice: '₹4,499',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34.webp?v=1738306745',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34_500x_1.webp?v=1740026959',
                 },
                 {
                     id: '3',
@@ -42,7 +42,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     originalPrice: '₹7,999',
                     discount: '41%',
                     salePrice: 'Out of stock',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16.webp?v=1738558551',
+                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16_500x_1.webp?v=1740026957',
                 }
             ]);
             setLoading(false);
@@ -93,9 +93,10 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                                 <Image source={{ uri: item.image }} style={styles.image} />
                                 <Text style={styles.name}>{item.name}</Text>
                                 <Text style={styles.description}>{item.description}</Text>
-                                <Text style={styles.originalPrice}>
-                                    {item.originalPrice} <Text style={styles.discount}>{item.discount} off</Text>
-                                </Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={styles.originalPrice}>{item.originalPrice}</Text>
+                                    <Text style={styles.discount}> {item.discount} off</Text>
+                                </View>
                                 <Text style={styles.salePrice}>{item.salePrice}</Text>
                             </TouchableOpacity>
                         ))}

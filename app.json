@@ -1,4 +1,3 @@
-
 {
   "expo": {
     "name": "goNoise",
@@ -16,7 +15,8 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "**/*",
+      "assets/fonts/*"
     ],
     "ios": {
       "supportsTablet": true

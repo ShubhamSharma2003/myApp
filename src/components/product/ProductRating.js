@@ -29,6 +29,7 @@ const ReviewRatings = () => {
       <RatingBar label="COMFORT" leftLabel="Uncomfortable" rightLabel="Comfortable" progress={0.8} />
       <RatingBar label="QUALITY" leftLabel="Poor" rightLabel="Perfect" progress={0.95} />
     </View>
+    
   );
 };
 
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: "white",
+    paddingTop: 10,
   },
   header: {
     fontSize: 23,
@@ -81,7 +83,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rating: {
-    paddingTop:20,
+    fontFamily: "Diner-Regular",
+    paddingTop: 10,
     fontSize: 50,
   },
   stars: {
