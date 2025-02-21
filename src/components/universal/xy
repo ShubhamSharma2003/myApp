@@ -39,7 +39,7 @@ export const fetchProducts = async () => {
                     id
                     title
                     sku
-                    price {
+                   price {
                       amount
                       currencyCode
                     }
@@ -79,44 +79,13 @@ export const fetchProducts = async () => {
     const variables = { handle: "smart-watches" };
 
     const response = await request(SHOPIFY_GRAPHQL_URL, query, variables, headers);
-    // Extract products from response
-    const products = response.collectionByHandle?.products?.edges.map(({ node }) => {
-      console.log("Raw Variants Data Before Mapping:", JSON.stringify(node.variants, null, 2)); // Debug log
-    
-      return {
-        id: node.id,
-        title: node.title,
-        descriptionHtml: node.descriptionHtml,
-        handle: node.handle,
-        featuredImage: node.featuredImage,
-        priceRange: node.priceRange,
-    
-        // ✅ Ensure variants are correctly mapped
-        variants: node.variants.edges.map(({ node: variant }) => {
-          console.log("Variant Object Before Mapping:", JSON.stringify(variant, null, 2)); // Debug log
-    
-          return {
-            id: variant.id,
-            title: variant.title,
-            sku: variant.sku,
-            price: variant.price.amount, // Extract price amount
-            currency: variant.price.currencyCode, // Extract currency
-            availableForSale: variant.availableForSale,
-            selectedOptions: variant.selectedOptions.reduce((acc, option) => {
-              acc[option.name] = option.value;
-              return acc;
-            }, {}), // Convert selected options from array to object
-            image: variant.image?.url || null,
-          };
-        }),
-    
-        metafield: node.metafield ? { key: node.metafield.key, value: node.metafield.value } : null,
-        uspTags: node.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
-      };
-    }) || [];
-    
-    
-    // console.log("Fetched products:", products);
+
+    const products = response.collectionByHandle?.products?.edges.map(({ node }) => ({
+      ...node,
+      metafield: node.metafield ? [node.metafield] : [],
+    })) || [];
+
+    console.log("Fetched products:", products);
     return products;
   } catch (error) {
     console.error("Error fetching products:", error);

@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 const { width } = Dimensions.get('window');
 
 const ProductGrid = ({ backgroundType = 'video' }) => {
-    const navigation = useNavigation(); // Get navigation instance
+    const navigation = useNavigation(); 
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     description: '11" Amoled Diamond Design',
                     originalPrice: '₹7,999',
                     discount: '41%',
-                    salePrice: 'Out of stock',
+                    salePrice: '₹6,999',
                     image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16_500x_1.webp?v=1740026957',
                 }
             ]);
@@ -93,11 +93,12 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                                 <Image source={{ uri: item.image }} style={styles.image} />
                                 <Text style={styles.name}>{item.name}</Text>
                                 <Text style={styles.description}>{item.description}</Text>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={styles.priceContainer}>
+                                    <Text style={styles.salePrice}>{item.salePrice}</Text>
                                     <Text style={styles.originalPrice}>{item.originalPrice}</Text>
-                                    <Text style={styles.discount}> {item.discount} off</Text>
+                                    <Text style={styles.discount}>{item.discount} off</Text>
                                 </View>
-                                <Text style={styles.salePrice}>{item.salePrice}</Text>
+
                             </TouchableOpacity>
                         ))}
                 </ScrollView>
@@ -182,13 +183,14 @@ const styles = StyleSheet.create({
         paddingBottom: 6,
     },
     card: {
-        width: width * 0.4,
+        width: width * 0.41,
         backgroundColor: '#fff',
-        padding: 15,
+        paddingHorizontal: 10,
         marginRight: 7,
-        alignItems: 'center',
+        alignItems: 'flex-start', // Ensures text is left-aligned
         borderWidth: 1,
         borderColor: '#eee',
+        paddingVertical: 10,
     },
     heartIcon: {
         position: 'absolute',
@@ -199,19 +201,26 @@ const styles = StyleSheet.create({
     image: {
         width: 120,
         height: 120,
+        alignSelf: 'center',
         resizeMode: 'contain',
         marginBottom: 10,
     },
     name: {
         fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
+        textAlign: 'left',
     },
     description: {
         fontSize: 12,
         color: '#777',
-        textAlign: 'center',
-        marginBottom: 5,
+        textAlign: 'left',
+    },
+    priceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center', 
+        flexWrap: 'wrap',     
+        gap: 6,                
+        maxWidth: '100%',    
     },
     originalPrice: {
         textDecorationLine: 'line-through',
@@ -219,6 +228,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     discount: {
+        fontSize: 11,
         color: 'green',
         fontWeight: 'bold',
     },

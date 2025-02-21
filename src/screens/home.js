@@ -16,13 +16,16 @@ import HybridList from '../components/universal/HybridList';
 import TopProductsCarousel from '../components/universal/TopProductCarousel';
 import ProductTile from '../components/universal/ProductTile'
 import CardStackCarousal from '../components/universal/CardStackCarousal';
+import ProductList from '../components/universal/ProductList';
 
 export default function Home() {
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
             <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
+            <View style={{ flex: 1 }}> 
                 <Header />
+                <ProductList />
                 {/* <SearchBar /> */}
                 {/* <CategoryNav /> */}
                 {/* <PromotionalBanner /> */}
@@ -38,6 +41,7 @@ export default function Home() {
                 {/* <CardStackCarousal /> */}
                 {/* <ProductCarousel /> */}
                 {/* <CallToAction /> */}
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
