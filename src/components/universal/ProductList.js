@@ -36,10 +36,9 @@ export default function ProductList() {
                 const title = item.metafield?.value || item.title; // ✅ Use metafield value if available
                 const price = item.priceRange?.minVariantPrice?.amount + " " + item.priceRange?.minVariantPrice?.currencyCode;
                 
-                // ✅ Extract clean USP tags (remove "USP1_" prefix)
                 const formattedUspTags = Array.isArray(item.uspTags)
                     ? item.uspTags
-                        .map(tag => tag.replace(/^usp\d*_?/i, "")) // Removes "usp_", "usp1_", "USP2_", etc.
+                        .map(tag => tag.replace(/^usp\d*_?/i, "")) 
                         .join(" | ")
                     : "";
 

@@ -25,7 +25,7 @@ export default function Home() {
             <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
             <View style={{ flex: 1 }}> 
                 <Header />
-                <ProductList />
+                {/* <ProductList /> */}
                 {/* <SearchBar /> */}
                 {/* <CategoryNav /> */}
                 {/* <PromotionalBanner /> */}

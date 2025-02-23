@@ -1,7 +1,7 @@
 import { request, gql } from "graphql-request";
 
 const SHOPIFY_STORE_DOMAIN = "mansinoise.myshopify.com";
-const SHOPIFY_STOREFRONT_ACCESS_TOKEN = "ab606b7469f8fdb9a810bcf7255a4a5c"; // Replace this
+const SHOPIFY_STOREFRONT_ACCESS_TOKEN = "ab606b7469f8fdb9a810bcf7255a4a5c"; 
 const API_VERSION = "2025-01";
 const SHOPIFY_GRAPHQL_URL = `https://${SHOPIFY_STORE_DOMAIN}/api/${API_VERSION}/graphql.json`;
 
@@ -52,6 +52,10 @@ export const fetchProducts = async () => {
                       url
                       altText
                     }
+                    compareAtPrice {
+                      amount
+                      currencyCode
+                    }
                   }
                 }
               }
@@ -81,7 +85,6 @@ export const fetchProducts = async () => {
     const response = await request(SHOPIFY_GRAPHQL_URL, query, variables, headers);
     // Extract products from response
     const products = response.collectionByHandle?.products?.edges.map(({ node }) => {
-      console.log("Raw Variants Data Before Mapping:", JSON.stringify(node.variants, null, 2)); // Debug log
     
       return {
         id: node.id,
@@ -91,21 +94,20 @@ export const fetchProducts = async () => {
         featuredImage: node.featuredImage,
         priceRange: node.priceRange,
     
-        // ✅ Ensure variants are correctly mapped
+
         variants: node.variants.edges.map(({ node: variant }) => {
-          console.log("Variant Object Before Mapping:", JSON.stringify(variant, null, 2)); // Debug log
     
           return {
             id: variant.id,
             title: variant.title,
             sku: variant.sku,
-            price: variant.price.amount, // Extract price amount
-            currency: variant.price.currencyCode, // Extract currency
+            price: variant.price.amount, 
+            currency: variant.price.currencyCode, 
             availableForSale: variant.availableForSale,
             selectedOptions: variant.selectedOptions.reduce((acc, option) => {
               acc[option.name] = option.value;
               return acc;
-            }, {}), // Convert selected options from array to object
+            }, {}), 
             image: variant.image?.url || null,
           };
         }),

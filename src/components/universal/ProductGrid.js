@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ImageBackground, ActivityIndicator } from 'react-native';
 import { Video } from 'expo-av';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import PremiumTouchable from './Pressable';
 import HeartIcon from "../../../assets/icons/heartIcon.svg";
 import { useNavigation } from '@react-navigation/native';
+import { fetchProducts } from '../../../api/shopifyApi'; 
+import { formatPrice, calculateDiscount,formatUspTags } from '../../utils/helper'; 
+
 
 const { width } = Dimensions.get('window');
 
@@ -13,40 +16,22 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    // const formattedUspTags = formatUspTags(item.uspTags);
 
     useEffect(() => {
-        setTimeout(() => {
-            setProducts([
-                {
-                    id: '1',
-                    name: 'ColorFit Pro 6',
-                    description: 'AI Create | Amoled Display',
-                    originalPrice: '₹5,999',
-                    discount: '16%',
-                    salePrice: '₹4,499',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_10_500x_1.webp?v=1740026963',
-                },
-                {
-                    id: '2',
-                    name: 'NoiseFit Diva 2',
-                    description: 'Amoled Display | Sleek Dial',
-                    originalPrice: '₹6,999',
-                    discount: '35%',
-                    salePrice: '₹4,499',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_34_500x_1.webp?v=1740026959',
-                },
-                {
-                    id: '3',
-                    name: 'NoiseFit Diva',
-                    description: '11" Amoled Diamond Design',
-                    originalPrice: '₹7,999',
-                    discount: '41%',
-                    salePrice: '₹6,999',
-                    image: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Artboard_16_500x_1.webp?v=1740026957',
-                }
-            ]);
-            setLoading(false);
-        }, 500);
+        const loadProducts = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchProducts();
+                setProducts(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProducts();
     }, []);
 
     return (
@@ -75,39 +60,69 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                 </View>
 
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-                    {loading
-                        ? Array(3).fill(0).map((_, index) => (
+                    {loading ? (
+                        Array(3).fill(0).map((_, index) => (
                             <View key={index} style={styles.card}>
                                 <ProductPlaceholder />
                             </View>
                         ))
-                        : products.map((item) => (
-                            <TouchableOpacity 
-                                key={item.id} 
-                                style={styles.card} 
-                                onPress={() => navigation.navigate('ProductPage', { product: item })} // ✅ Fixed navigation
-                            >
-                                <TouchableOpacity style={styles.heartIcon}>
-                                    <HeartIcon width={18} height={18} />
-                                </TouchableOpacity>
-                                <Image source={{ uri: item.image }} style={styles.image} />
-                                <Text style={styles.name}>{item.name}</Text>
-                                <Text style={styles.description}>{item.description}</Text>
+                    ) : (
+                        products.map((item) => {
+                            const imageUrl = item.featuredImage ? item.featuredImage.url : 'https://via.placeholder.com/150';
+                            const title = item.metafield?.value || item.title;
+                            const price = item.priceRange?.minVariantPrice?.amount;
+
+                            const formattedUspTags = formatUspTags(item.uspTags);
+
+                            return (
+                                <TouchableOpacity 
+                                    key={item.id} 
+                                    style={styles.card} 
+                                    onPress={() => navigation.navigate('ProductPage', { product: item })}
+                                >
+                                    <TouchableOpacity style={styles.heartIcon}>
+                                        <HeartIcon width={18} height={18} />
+                                    </TouchableOpacity>
+                                    
+                                    <Image 
+                                        source={{ uri: imageUrl }} 
+                                        style={styles.image} 
+                                    />
+                                    
+                                    <Text style={styles.name}>{title}</Text> 
+                                    
+                                    <Text style={styles.description}>
+                                        {formattedUspTags || item.descriptionHtml.replace(/<[^>]*>?/gm, '').substring(0, 50) + "..."}
+                                    </Text>
+
+
                                 <View style={styles.priceContainer}>
-                                    <Text style={styles.salePrice}>{item.salePrice}</Text>
-                                    <Text style={styles.originalPrice}>{item.originalPrice}</Text>
-                                    <Text style={styles.discount}>{item.discount} off</Text>
+                                    <Text style={styles.salePrice}>
+                                            ₹{formatPrice(item.priceRange?.minVariantPrice?.amount)}
+                                    </Text>
+                                    {item.priceRange?.maxVariantPrice?.amount && (
+                                        <Text style={styles.originalPrice}>
+                                            ₹{formatPrice(item.priceRange.maxVariantPrice.amount)}
+                                        </Text>
+                                    )}
+                                    {item.priceRange?.minVariantPrice?.amount && item.priceRange?.maxVariantPrice?.amount && (
+                                        <Text style={styles.discountText}>
+                                            {calculateDiscount(item.priceRange?.minVariantPrice?.amount, item.priceRange?.maxVariantPrice?.amount)}
+                                        </Text>
+                                    )}
                                 </View>
 
-                            </TouchableOpacity>
-                        ))}
+                                </TouchableOpacity>
+                            );
+                        })
+                    )}
                 </ScrollView>
             </View>
         </View>
     );
 };
 
-// Skeleton Loader
+// ✅ Skeleton Loader
 const ProductPlaceholder = () => (
     <ContentLoader
         speed={1.5}
@@ -152,7 +167,7 @@ const styles = StyleSheet.create({
     },
     header: {
         paddingTop: 100,
-        alignItems: 'left',
+        alignItems: 'flex-start',
         marginBottom: 10,
     },
     heading: {
@@ -187,7 +202,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 10,
         marginRight: 7,
-        alignItems: 'flex-start', // Ensures text is left-aligned
+        alignItems: 'flex-start',
         borderWidth: 1,
         borderColor: '#eee',
         paddingVertical: 10,
@@ -199,8 +214,8 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     image: {
-        width: 120,
-        height: 120,
+        width: 100,
+        height: 100,
         alignSelf: 'center',
         resizeMode: 'contain',
         marginBottom: 10,
@@ -217,20 +232,14 @@ const styles = StyleSheet.create({
     },
     priceContainer: {
         flexDirection: 'row',
-        alignItems: 'center', 
-        flexWrap: 'wrap',     
-        gap: 6,                
-        maxWidth: '100%',    
+        alignItems: 'baseline',
+        gap: 6,
+        maxWidth: '100%',
     },
     originalPrice: {
         textDecorationLine: 'line-through',
         color: '#777',
         fontSize: 12,
-    },
-    discount: {
-        fontSize: 11,
-        color: 'green',
-        fontWeight: 'bold',
     },
     salePrice: {
         fontSize: 16,
@@ -238,6 +247,13 @@ const styles = StyleSheet.create({
         color: '#000000',
         marginTop: 5,
     },
+    discountText:{
+        fontSize: 12,
+        color: '#27ae60',
+        fontWeight: 'bold',
+        marginTop: 5,
+    }
 });
 
 export default ProductGrid;
+
