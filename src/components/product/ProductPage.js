@@ -18,14 +18,9 @@ const ProductPage = () => {
   const route = useRoute();
   const product = route.params?.product || {};
   
-
-  // const [selectedImages, setSelectedImages] = useState(product?.variants?.[0]?.images ?? []);
-  // const [selectedVariantId, setSelectedVariantId] = useState(product?.variants?.[0]?.id || '');
   const [selectedImages, setSelectedImages] = useState(product.images || []);
-const [selectedTitle, setSelectedTitle] = useState(product.title);
-const [selectedDescription, setSelectedDescription] = useState(product.description);
-const [selectedPrice, setSelectedPrice] = useState(product.variants?.[0]?.price);
-const [selectedVariantId, setSelectedVariantId] = useState(product.variants?.[0]?.id);
+  const [selectedPrice, setSelectedPrice] = useState(product.variants?.[0]?.price);
+  const [selectedVariantId, setSelectedVariantId] = useState(product.variants?.[0]?.id);
 
   
 
@@ -33,7 +28,7 @@ useEffect(() => {
   const selectedVariant = product.variants?.find(v => v.id === selectedVariantId);
   
   if (selectedVariant && selectedVariant.image) {
-    setSelectedImages([selectedVariant.image]);  // Update the image slider with new variant images
+    setSelectedImages([selectedVariant.image]); 
   }
 }, [selectedVariantId]);
 
@@ -42,26 +37,19 @@ useEffect(() => {
 const handleVariantSelect = (variant) => {
   setSelectedVariantId(variant.id);
 
-  // Check if variant contains multiple images
+  
   if (variant.images?.length > 0) {
-    setSelectedImages(variant.images.map(img => img.src || img.url));  // Ensure correct format
+    setSelectedImages(variant.images.map(img => img.src || img.url));  
   } else if (variant.image) {
-    setSelectedImages([variant.image.src || variant.image.url]);  // Wrap single image in an array
+    setSelectedImages([variant.image.src || variant.image.url]); 
   } else {
-    setSelectedImages(product.images?.map(img => img.src || img.url) || []);  // Fallback to product images
+    setSelectedImages(product.images?.map(img => img.src || img.url) || []); 
   }
-
-  // Update other product details
-  setSelectedTitle(variant.title);
-  setSelectedDescription(product.description); // Usually remains the same
   setSelectedPrice(variant.price);
 };
 
   
   
-
-  
-
   
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -69,8 +57,6 @@ const handleVariantSelect = (variant) => {
         <ProductHeader />
           <View style={styles.imageContainer}>
           <VerticalImageSlider images={selectedImages.length > 0 ? selectedImages : product.images?.map(img => img.src || img.url)} />
-
-
 
           </View>
         
