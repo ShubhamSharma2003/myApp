@@ -13,6 +13,8 @@ import ProductRating from './ProductRating';
 import ProductTileLarge from '../../components/universal/ProductTileLarge';
 import VideoBanner from '../universal/VideoBanner';
 import ImageBanner from '../universal/ImageBanner';
+import {formatPrice,formatUspTags, calculateDiscount } from '../../utils/helper'; 
+
 
 const ProductPage = () => {
   const route = useRoute();
@@ -21,42 +23,40 @@ const ProductPage = () => {
   const [selectedImages, setSelectedImages] = useState(product.images || []);
   const [selectedPrice, setSelectedPrice] = useState(product.variants?.[0]?.price);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants?.[0]?.id);
-
-  
+  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const [selectedVariantMedia, setSelectedVariantMedia] = useState([]);
 
 useEffect(() => {
-  const selectedVariant = product.variants?.find(v => v.id === selectedVariantId);
+  let mediaImages = product.media.filter((media,index) =>{
+    if(media.altText == selectedVariant.title){
+      console.log("media",media.url);
+      return media.url;
+    }
+  })
+  setSelectedVariantMedia(mediaImages);
+}, []);
   
-  if (selectedVariant && selectedVariant.image) {
-    setSelectedImages([selectedVariant.image]); 
-  }
-}, [selectedVariantId]);
-
-  
-
-const handleVariantSelect = (variant) => {
-  setSelectedVariantId(variant.id);
-
-  
-  if (variant.images?.length > 0) {
-    setSelectedImages(variant.images.map(img => img.src || img.url));  
-  } else if (variant.image) {
-    setSelectedImages([variant.image.src || variant.image.url]); 
-  } else {
-    setSelectedImages(product.images?.map(img => img.src || img.url) || []); 
-  }
+ const formattedUspTags = formatUspTags(product.uspTags);
+  const handleVariantSelect = (variant) => {
+  setSelectedVariant(variant);
+  let mediaImages = product.media.filter((media,index) =>{
+    if(media.altText === variant.title){
+      return media.url;
+    }
+  })
+  setSelectedVariantMedia(mediaImages);
   setSelectedPrice(variant.price);
 };
 
   
-  
+  console.log(selectedVariantMedia,"productssss", product.media[0].url);
   
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView nestedScrollEnabled={true} style={{ flex: 1 }} stickyHeaderIndices={[0, 2]}>
         <ProductHeader />
           <View style={styles.imageContainer}>
-          <VerticalImageSlider images={selectedImages.length > 0 ? selectedImages : product.images?.map(img => img.src || img.url)} />
+          <VerticalImageSlider images={ selectedVariantMedia } selectedVariant={selectedVariant.title} />
 
           </View>
         
@@ -66,7 +66,7 @@ const handleVariantSelect = (variant) => {
               <TouchableOpacity
                key={variant.id}
                onPress={() => handleVariantSelect(variant)}
-               style={[styles.variantButton, selectedVariantId === variant.id && styles.activeVariantButton]}
+               style={[styles.variantButton, selectedVariant?.id === variant.id && styles.activeVariantButton]}
               >
                 <Image 
                   source={{ uri: variant.image || 'https://via.placeholder.com/65' }} 
@@ -79,13 +79,13 @@ const handleVariantSelect = (variant) => {
 
         
         <View style={styles.details}>
-          <Text style={styles.title}>{product.name || 'Product Name'}</Text>
-          <Text style={styles.description}>{product.description || 'Product description goes here.'}</Text>
+          <Text style={styles.title}>{product?.metafield?.value || 'Product Name'} - {selectedVariant?.title}</Text>
+          <Text style={styles.description}>{formattedUspTags || product.descriptionHtml.replace(/<[^>]*>?/gm, '').substring(0, 50) + "..." || 'Product description goes here.'}</Text>
           <View style={styles.priceContainer}>
             <View style={styles.priceRow}>
-              <Text style={styles.salePrice}>{product.salePrice || '₹0'}</Text>
-              <Text style={styles.originalPrice}>{product.originalPrice || '₹0'}</Text>
-              <Text style={styles.discountText}>{product.discount || '0% OFF'}</Text>
+              <Text style={styles.salePrice}> ₹{formatPrice(selectedVariant.price || '₹0')}</Text>
+              <Text style={styles.originalPrice}>₹{formatPrice(selectedVariant?.compareAtPrice || '0')}</Text>
+              <Text style={styles.discountText}>{calculateDiscount(selectedVariant.price, selectedVariant?.compareAtPrice) || '0% OFF'}</Text>
             </View>
           </View>
         </View>

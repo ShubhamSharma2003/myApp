@@ -30,7 +30,7 @@ export default function MainStack() {
                 component={ProductPage}
                 options={{
                     headerShown: false, // Hide header for this screen
-                    presentation: 'modal', // Optional: Use modal presentation style for product page
+                    presentation: 'transparentModal', // Optional: Use modal presentation style for product page
                 }}
             />
             

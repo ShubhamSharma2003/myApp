@@ -5,6 +5,8 @@ const SHOPIFY_STOREFRONT_ACCESS_TOKEN = "ab606b7469f8fdb9a810bcf7255a4a5c";
 const API_VERSION = "2025-01";
 const SHOPIFY_GRAPHQL_URL = `https://${SHOPIFY_STORE_DOMAIN}/api/${API_VERSION}/graphql.json`;
 
+
+
 export const fetchProducts = async () => {
   const query = gql`
     query getCollectionByHandle($handle: String!) {
@@ -33,7 +35,7 @@ export const fetchProducts = async () => {
                   currencyCode
                 }
               }
-              variants(first: 100) {
+              variants(first: 20) {
                 edges {
                   node {
                     id
@@ -65,6 +67,14 @@ export const fetchProducts = async () => {
                 value
                 type
               }
+               media(first: 100) {
+            nodes {
+              previewImage {
+                altText
+                url
+              }
+            }
+          }
             }
           }
         }
@@ -96,12 +106,12 @@ export const fetchProducts = async () => {
     
 
         variants: node.variants.edges.map(({ node: variant }) => {
-    
           return {
             id: variant.id,
             title: variant.title,
             sku: variant.sku,
             price: variant.price.amount, 
+            compareAtPrice: variant.compareAtPrice?.amount || null,
             currency: variant.price.currencyCode, 
             availableForSale: variant.availableForSale,
             selectedOptions: variant.selectedOptions.reduce((acc, option) => {
@@ -111,7 +121,10 @@ export const fetchProducts = async () => {
             image: variant.image?.url || null,
           };
         }),
-    
+        media: node.media?.nodes.map(media => ({
+          url: media.previewImage?.url || null,
+          altText: media.previewImage?.altText || null,
+        })) || [],
         metafield: node.metafield ? { key: node.metafield.key, value: node.metafield.value } : null,
         uspTags: node.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
       };

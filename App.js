@@ -119,6 +119,14 @@ const MyTabs = () => {
           ),
         }}
       />
+      {/* <Tab.Screen 
+        name="ProductPage" 
+        component={ProductPage} 
+        options={{
+          tabBarButton: () => null,  // Hides the tab button
+          tabBarStyle: styles.tabBar, // Ensures the tab bar remains visible
+        }}
+      /> */}
     </Tab.Navigator>
   );
 };

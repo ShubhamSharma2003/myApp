@@ -98,11 +98,11 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
 
                                 <View style={styles.priceContainer}>
                                     <Text style={styles.salePrice}>
-                                            ₹{formatPrice(item.priceRange?.minVariantPrice?.amount)}
+                                            ₹{formatPrice(item?.priceRange?.minVariantPrice?.amount)}
                                     </Text>
                                     {item.priceRange?.maxVariantPrice?.amount && (
                                         <Text style={styles.originalPrice}>
-                                            ₹{formatPrice(item.priceRange.maxVariantPrice.amount)}
+                                           ₹{formatPrice(item?.variants?.[0]?.compareAtPrice || '0')}
                                         </Text>
                                     )}
                                     {item.priceRange?.minVariantPrice?.amount && item.priceRange?.maxVariantPrice?.amount && (
