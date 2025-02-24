@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
@@ -16,123 +16,93 @@ import ImageBanner from '../universal/ImageBanner';
 
 const ProductPage = () => {
   const route = useRoute();
-  // (Define your image URLs and product data as before)
-  const imageUrl11 = "https://www.gonoise.com/cdn/shop/files/5_debf6487-e016-42fa-9731-6abff3721427.webp?v=1721364459";
-  const imageUrl12 = "https://www.gonoise.com/cdn/shop/files/4_344ca49c-c4a9-44a5-b34e-7aa4a40d87ef.webp?v=1721364460";
-  const imageUrl13 = "https://www.gonoise.com/cdn/shop/files/2_4d8489ad-5bcd-4a39-98ea-1328e084a9f3.webp?v=1721364459";
-  const imageUrl14 = "https://www.gonoise.com/cdn/shop/files/2_4d8489ad-5bcd-4a39-98ea-1328e084a9f3.webp?v=1721364459";
-  const imageUrl21 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-1_5a47cb71-4d70-4ca0-92d2-905d36be5242.webp?v=1725621304?width=600";
-  const imageUrl22 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-2_2c6b8bcc-4ff5-4d72-b3dd-19b79e591351.webp?v=1725621303?width=600";
-  const imageUrl23 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-5_5d8b0c53-8efb-4927-bbdc-241da07d455a.webp?v=1725621303?width=600";
-  const imageUrl24 = "https://cdn.shopify.com/s/files/1/0997/6284/files/Halo-2-Carousel-3_b2b56d3d-0144-4fe5-86c3-e1577052265d.webp?v=1725621303?width=600";
-  const imageUrl31 = "https://www.gonoise.com/cdn/shop/files/1_ecb6bab3-7552-4d31-a0bb-833b19044577.png?v=1716538343";
-  const imageUrl32 = "https://www.gonoise.com/cdn/shop/files/5_3cf0e0ba-6c51-4a11-91eb-100a9fd64630.png?v=1716538337";
-  const imageUrl33 = "https://www.gonoise.com/cdn/shop/files/8_b47d2f17-a9c5-4320-b260-41d301c8c0e2.png?v=1716538341";
-  const imageUrl34 = "https://www.gonoise.com/cdn/shop/files/7_f387af89-7c11-4a85-a371-e11920815e39.png?v=1716538340";
-  const imageUrl41 = "https://www.gonoise.com/cdn/shop/files/Artboard_26_pro6max.webp?v=1739277875";
-  const imageUrl42 = "https://www.gonoise.com/cdn/shop/files/Artboard_8_pro6max.webp?v=1739277875";
-  const imageUrl43 = "http://www.gonoise.com/cdn/shop/files/Artboard_33_pro6max.webp?v=1739277875";
-  const imageUrl44 = "https://www.gonoise.com/cdn/shop/files/Artboard_16_pro6max.webp?v=1739277875";
-
-
-  const product = {
-    id: route.params?.product?.id || 'demo',
-    name: route.params?.product?.name || 'Demo Product',
-    description: route.params?.product?.description || 'This is a demo product description.',
-    originalPrice: route.params?.product?.originalPrice || '₹9,999',
-    discount: route.params?.product?.discount || '20%',
-    salePrice: route.params?.product?.salePrice || '₹7,999',
-    image: imageUrl11,
-    images: route.params?.product?.images?.length > 0 
-      ? route.params.product.images 
-      : [imageUrl11], // Simplified for clarity
-    variants: route.params?.product?.variants?.length > 0 
-      ? route.params.product.variants 
-      : [
-        { 
-          id: '1', 
-          images: [imageUrl11, imageUrl12, imageUrl13, imageUrl14],
-        },
-        { 
-          id: '2', 
-          images: [imageUrl21, imageUrl22, imageUrl23, imageUrl24] ,
-        },
-        { 
-          id: '3', 
-          images: [imageUrl31, imageUrl32, imageUrl33, imageUrl34] , 
-        },
-        { 
-          id: '4', 
-          images: [imageUrl41, imageUrl42, imageUrl43, imageUrl44] , 
-        }
-        ,
-        { 
-          id: '5', 
-          images: [imageUrl11, imageUrl12, imageUrl13, imageUrl14] ,
-        }
-        ,
-        { 
-          id: '6', 
-          images: [imageUrl21, imageUrl22, imageUrl23, imageUrl24] , 
-        }
-        ],
-  };
-
-  const [selectedImages, setSelectedImages] = useState(product.variants[0].images);
-  const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
-
-
-  const handleVariantSelect = (variant) => {
-    if (variant && Array.isArray(variant.images) && variant.images.length > 0) {
-      setSelectedImages(variant.images); 
-      setSelectedVariantId(variant.id);
-    } else {
-      console.log('Variant is undefined or does not have images', variant); // Log the variant for debugging
-      setSelectedImages([imageUrl11]); 
-    }
-  };
+  const product = route.params?.product || {};
   
 
+  // const [selectedImages, setSelectedImages] = useState(product?.variants?.[0]?.images ?? []);
+  // const [selectedVariantId, setSelectedVariantId] = useState(product?.variants?.[0]?.id || '');
+  const [selectedImages, setSelectedImages] = useState(product.images || []);
+const [selectedTitle, setSelectedTitle] = useState(product.title);
+const [selectedDescription, setSelectedDescription] = useState(product.description);
+const [selectedPrice, setSelectedPrice] = useState(product.variants?.[0]?.price);
+const [selectedVariantId, setSelectedVariantId] = useState(product.variants?.[0]?.id);
+
+  
+
+useEffect(() => {
+  const selectedVariant = product.variants?.find(v => v.id === selectedVariantId);
+  
+  if (selectedVariant && selectedVariant.image) {
+    setSelectedImages([selectedVariant.image]);  // Update the image slider with new variant images
+  }
+}, [selectedVariantId]);
+
+  
+
+const handleVariantSelect = (variant) => {
+  setSelectedVariantId(variant.id);
+
+  // Check if variant contains multiple images
+  if (variant.images?.length > 0) {
+    setSelectedImages(variant.images.map(img => img.src || img.url));  // Ensure correct format
+  } else if (variant.image) {
+    setSelectedImages([variant.image.src || variant.image.url]);  // Wrap single image in an array
+  } else {
+    setSelectedImages(product.images?.map(img => img.src || img.url) || []);  // Fallback to product images
+  }
+
+  // Update other product details
+  setSelectedTitle(variant.title);
+  setSelectedDescription(product.description); // Usually remains the same
+  setSelectedPrice(variant.price);
+};
+
+  
+  
+
+  
+
+  
   return (
     <SafeAreaView style={{ flex: 1 }}>
-
       <ScrollView nestedScrollEnabled={true} style={{ flex: 1 }} stickyHeaderIndices={[0, 2]}>
-        
         <ProductHeader />
-        <View style={styles.imageContainer}>
-         <VerticalImageSlider images={selectedImages.map((img, index) => ({ id: index, url: img }))} />
+          <View style={styles.imageContainer}>
+          <VerticalImageSlider images={selectedImages.length > 0 ? selectedImages : product.images?.map(img => img.src || img.url)} />
 
-        </View>
+
+
+          </View>
         
         <View style={styles.stickyHeader}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.variantScroll}>
-          {product.variants.map((variant) => (
-            <TouchableOpacity
-              key={variant.id}
-              onPress={() => handleVariantSelect(variant)}
-              style={[
-                styles.variantButton,
-                selectedVariantId === variant.id && styles.activeVariantButton // Apply active style
-              ]}
-            >
-              <Image source={{ uri: variant.images[0] }} style={styles.variantImage} />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.variantScroll}>
+            {product?.variants?.map((variant) => (
+              <TouchableOpacity
+               key={variant.id}
+               onPress={() => handleVariantSelect(variant)}
+               style={[styles.variantButton, selectedVariantId === variant.id && styles.activeVariantButton]}
+              >
+                <Image 
+                  source={{ uri: variant.image || 'https://via.placeholder.com/65' }} 
+                 style={styles.variantImage} 
+               />
+             </TouchableOpacity>
+           ))}
+           </ScrollView>
         </View>
-        {/* The rest of your product content */}
+
+        
         <View style={styles.details}>
-          <Text style={styles.title}>{product.name}</Text>
-          <Text style={styles.description}>{product.description}</Text>
+          <Text style={styles.title}>{product.name || 'Product Name'}</Text>
+          <Text style={styles.description}>{product.description || 'Product description goes here.'}</Text>
           <View style={styles.priceContainer}>
             <View style={styles.priceRow}>
-              <Text style={styles.salePrice}>{product.salePrice}</Text>
-              <Text style={styles.originalPrice}>{product.originalPrice}</Text>
-              <Text style={styles.discountText}>10% OFF</Text>
+              <Text style={styles.salePrice}>{product.salePrice || '₹0'}</Text>
+              <Text style={styles.originalPrice}>{product.originalPrice || '₹0'}</Text>
+              <Text style={styles.discountText}>{product.discount || '0% OFF'}</Text>
             </View>
           </View>
         </View>
-
 
 
         <TouchableOpacity style={styles.addToBagButton}>

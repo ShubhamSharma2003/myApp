@@ -4,17 +4,21 @@ import { View, ScrollView, Image, Dimensions, StyleSheet, TouchableOpacity } fro
 const containerHeight = 480;
 const containerWidth = Dimensions.get('window').width;
 
-
 const VerticalImageSlider = ({ images = [] }) => {
   const scrollViewRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const formattedImages = images?.map((url, index) => ({
+    id: index.toString(),
+    url: url || 'https://via.placeholder.com/400',
+  }));
+  
 
   const onScroll = (e) => {
     const yOffset = e.nativeEvent.contentOffset.y;
     const newIndex = Math.round(yOffset / containerHeight);
     setCurrentIndex(newIndex);
   };
-
 
   const scrollToIndex = (index) => {
     if (scrollViewRef.current) {
@@ -37,7 +41,7 @@ const VerticalImageSlider = ({ images = [] }) => {
           onScroll={onScroll}
           scrollEventThrottle={16}
         >
-          {images.map((item) => (
+          {formattedImages.map((item, index) => (
             <View key={item.id} style={styles.slide}>
               <Image source={{ uri: item.url }} style={styles.image} />
             </View>
@@ -46,7 +50,7 @@ const VerticalImageSlider = ({ images = [] }) => {
       </View>
 
       <View style={styles.paginationContainer}>
-        {images.map((_, index) => (
+        {formattedImages.map((_, index) => (
           <TouchableOpacity key={index} onPress={() => scrollToIndex(index)} activeOpacity={0.7}>
             <View style={[styles.strip, index === currentIndex && styles.activeStrip]} />
           </TouchableOpacity>
