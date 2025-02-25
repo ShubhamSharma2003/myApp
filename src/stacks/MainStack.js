@@ -2,6 +2,8 @@ import React from 'react';
 import { createStackNavigator, CardStyleInterpolators, TransitionSpecs } from '@react-navigation/stack';
 import Home from '../screens/home';
 import CategoryScreen from '../screens/categoryScreen';
+// import CartScreen from '../screens/CartScreen';
+import WebViewScreen from '../screens/WebViewScreen';
 import ProductPage from '../components/product/ProductPage';
 
 const Stack = createStackNavigator();
@@ -33,7 +35,8 @@ export default function MainStack() {
                     presentation: 'transparentModal', // Optional: Use modal presentation style for product page
                 }}
             />
-            
+            {/* <Stack.Screen name="CartScreen" component={CartScreen} /> */}
+            <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
         </Stack.Navigator>
     );
 }

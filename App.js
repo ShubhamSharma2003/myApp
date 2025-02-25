@@ -1,30 +1,33 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Animated, StyleSheet, ActivityIndicator } from 'react-native';
 import { useFonts } from 'expo-font';
-import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from '@expo/vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ShopStack from './src/stacks/ShopStack.js';
 
-import CartScreen from './src/screens/CartScreen.js';
 import Home from './src/screens/home.js';
 import CategoryScreen from './src/screens/categoryScreen.js';
 import Premium from './src/screens/Premium.js';
 import Profile from './src/screens/profile.js';
 import ProductPage from './src/components/product/ProductPage.js';
-
+import CartScreen from './src/screens/CartScreen.js';
 import NoiseLogo from './assets/icons/noise3.svg';
 import NoiseLogo2 from './assets/icons/noiseGrey.svg';
 import HeartIcon from "./assets/icons/heartIcon.svg";
 import HeartIcon2 from "./assets/icons/heartIconGrey.svg";
 import nmclub from "./assets/icons/nmclub.svg";
 import nmclub2 from "./assets/icons/nmclubgrey.svg";
+import WebViewScreen from './src/screens/WebViewScreen.js';
+import { createCart } from './api/shopifyApi.js';
+import { CartProvider } from './src/components/universal/CartContext.js';
+import CartInitializer from './src/components/universal/CartInitializer.js'; 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-// 📌 Animated Icon Component
 const AnimatedTabIcon = ({ focused, defaultIcon: DefaultIcon, activeIcon: ActiveIcon, size }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -40,11 +43,9 @@ const AnimatedTabIcon = ({ focused, defaultIcon: DefaultIcon, activeIcon: Active
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
       {focused ? <ActiveIcon width={size} height={size} /> : <DefaultIcon width={size} height={size} />}
     </Animated.View>
-    
   );
 };
 
-// 📌 Bottom Tab Navigator
 const MyTabs = () => {
   return (
     <Tab.Navigator
@@ -119,51 +120,70 @@ const MyTabs = () => {
           ),
         }}
       />
-      {/* <Tab.Screen 
-        name="ProductPage" 
-        component={ProductPage} 
-        options={{
-          tabBarButton: () => null,  // Hides the tab button
-          tabBarStyle: styles.tabBar, // Ensures the tab bar remains visible
-        }}
-      /> */}
     </Tab.Navigator>
   );
 };
 
-// 📌 Main Stack Navigator (Includes ProductPage)
 const MainStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={MyTabs} />
       <Stack.Screen name="ProductPage" component={ProductPage} />
+      {/* <Stack.Screen name="ShopStack" component={ShopStack} options={{ headerShown: false }} /> */}
+      {/* <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} /> */}
+      <Stack.Screen name="WebViewScreen" component={WebViewScreen} /> 
     </Stack.Navigator>
   );
 };
 
-// 📌 App Component
+// 📌 **App Component**
 export default function App() {
   const [fontsLoaded] = useFonts({
     'AdihausDIN-Regular': require('./assets/fonts/AdihausDIN-Regular.otf'),
     'AdihausDIN-Bold': require('./assets/fonts/AdihausDIN-Bold.otf'),
   });
 
-  if (!fontsLoaded) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const initializeCart = async () => {
+      try {
+        const cartId = await AsyncStorage.getItem('cartId');
+        if (!cartId) {
+          const newCart = await createCart();
+          if (newCart?.id) {
+            await AsyncStorage.setItem('cartId', newCart.id);
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing cart:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeCart();
+  }, []);
+
+  if (!fontsLoaded || loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        {/* <ActivityIndicator size="large" /> */}
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
   return (
+    <CartProvider>
     <NavigationContainer>
+    <CartInitializer />
       <MainStack />
     </NavigationContainer>
+    </CartProvider>
   );
 }
 
-// ✅ Styles
+// ✅ **Styles**
 const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: '#fff',

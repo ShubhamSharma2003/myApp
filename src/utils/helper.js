@@ -13,3 +13,13 @@ export const formatUspTags = (uspTags) => {
         ? uspTags.map(tag => tag.replace(/^usp\d*_?/i, "")).join(" | ")
         : "";
 };
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export const getCartId = async () => {
+  return await AsyncStorage.getItem('cart_id');
+};
+
+export const setCartId = async (cartId) => {
+  await AsyncStorage.setItem('cart_id', cartId);
+};

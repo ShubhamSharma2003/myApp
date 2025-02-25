@@ -14,22 +14,31 @@ import ProductTileLarge from '../../components/universal/ProductTileLarge';
 import VideoBanner from '../universal/VideoBanner';
 import ImageBanner from '../universal/ImageBanner';
 import {formatPrice,formatUspTags, calculateDiscount } from '../../utils/helper'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addToCart } from '../../../api/shopifyApi';
+import { useNavigation } from '@react-navigation/native';
+import CartScreen from '../../screens/CartScreen';
+import { ActivityIndicator } from 'react-native';
 
 
 const ProductPage = () => {
   const route = useRoute();
   const product = route.params?.product || {};
+  const navigation = useNavigation();
+
+
   
   const [selectedImages, setSelectedImages] = useState(product.images || []);
   const [selectedPrice, setSelectedPrice] = useState(product.variants?.[0]?.price);
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants?.[0]?.id);
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
   const [selectedVariantMedia, setSelectedVariantMedia] = useState([]);
+  const [loading, setLoading] = useState(false);
 
 useEffect(() => {
   let mediaImages = product.media.filter((media,index) =>{
     if(media.altText == selectedVariant.title){
-      console.log("media",media.url);
+      // console.log("media",media.url);
       return media.url;
     }
   })
@@ -48,8 +57,41 @@ useEffect(() => {
   setSelectedPrice(variant.price);
 };
 
-  
-  console.log(selectedVariantMedia,"productssss", product.media[0].url);
+const checkCartId = async () => {
+  try {
+    const cartId = await AsyncStorage.getItem('cartId');
+    if (cartId !== null) {
+      console.log('Cart ID exists:', cartId);
+    } else {
+      console.log('No Cart ID found, creating a new one...');
+      // Here you can create a new cart if needed
+    }
+  } catch (error) {
+    console.error('Error retrieving cartId:', error);
+  }
+};
+
+// Call this function inside useEffect or any event handler
+useEffect(() => {
+  checkCartId();
+}, []);
+
+console.log("Selected variant", selectedVariant);
+const handleAddToCart = async () => {
+  setLoading(true); // Start loading
+  try {
+    const cart = await addToCart(selectedVariant.id, 1);
+    if (cart) {
+      console.log("Cart Updated:", cart);
+      navigation.navigate('Home', { screen: 'Cart' }); // Navigate to the Home (tab navigator) and activate the Cart tab
+    }
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+  } finally {
+    setLoading(false); // Stop loading after request completion
+  }
+};
+
   
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -91,10 +133,21 @@ useEffect(() => {
         </View>
 
 
-        <TouchableOpacity style={styles.addToBagButton}>
-          <Text style={styles.addToBagText}>ADD TO BAG</Text>
-          <MaterialCommunityIcons name="shopping" size={20} color="white" style={styles.bagIcon} />
+        <TouchableOpacity 
+          style={styles.addToBagButton} 
+          onPress={handleAddToCart} 
+          disabled={loading} // Disable button when loading
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="white" /> // Show loader when loading
+          ) : (
+            <>
+              <Text style={styles.addToBagText}>ADD TO BAG</Text>
+              <MaterialCommunityIcons name="shopping" size={20} color="white" style={styles.bagIcon} />
+            </>
+          )}
         </TouchableOpacity>
+
 
         <View style={styles.deliveryContainer}>
           <Text style={styles.deliveryText}>Check delivery date</Text>
