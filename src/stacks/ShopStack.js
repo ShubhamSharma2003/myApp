@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Shop from '../screens/categoryScreen';
 import CategoryItems from '../screens/CategoryItems';
 import CartScreen from '../screens/CartScreen';
+import CollectionScreen from '../screens/CollectionScreen';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,8 @@ export default function ShopStack() {
                     title: route.params.categoryName
                 })}
             />
+            <Stack.Screen name="CollectionScreen" component={CollectionScreen} options={{ title: 'Collection' }} />
+
             {/* <Stack.Screen name="CartScreen" component={CartScreen} /> */}
         </Stack.Navigator>
     );

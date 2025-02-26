@@ -1,24 +1,24 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import HeartIcon from "../../../assets/icons/heartIcon.svg";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function ProductHeader() {
+const ProductHeader = ({ style }) => {
     const navigation = useNavigation();
-    const routeIndex = useNavigationState((state) => state.index);
-    const currentRoute = useNavigationState((state) => state.routes[routeIndex]?.name);
+    
+    // Get the current route name in a single call
+    const currentRoute = useNavigationState(state => state.routes[state.index]?.name);
 
     const handleBackPress = () => {
         navigation.goBack(); 
     };
 
     return (
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, style]}>
             <View style={styles.topRow}>
                 <TouchableOpacity onPress={handleBackPress} style={styles.icon}>
-                <Ionicons name="return-down-back" size={24} color="black" />
+                    <Ionicons name="return-down-back" size={24} color="black" />
                 </TouchableOpacity>
 
                 <View style={styles.rightIcons}>
@@ -28,7 +28,7 @@ export default function ProductHeader() {
             </View>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     headerContainer: {
@@ -59,3 +59,5 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
     },
 });
+
+export default ProductHeader;

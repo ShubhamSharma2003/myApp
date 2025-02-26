@@ -98,11 +98,11 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
 
                                 <View style={styles.priceContainer}>
                                     <Text style={styles.salePrice}>
-                                            ₹{formatPrice(item?.priceRange?.minVariantPrice?.amount)}
+                                            {formatPrice(item?.priceRange?.minVariantPrice?.amount)}
                                     </Text>
                                     {item.priceRange?.maxVariantPrice?.amount && (
                                         <Text style={styles.originalPrice}>
-                                           ₹{formatPrice(item?.variants?.[0]?.compareAtPrice || '0')}
+                                           {formatPrice(item?.variants?.[0]?.compareAtPrice || '0')}
                                         </Text>
                                     )}
                                     {item.priceRange?.minVariantPrice?.amount && item.priceRange?.maxVariantPrice?.amount && (
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     name: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: 'bold',
         textAlign: 'left',
     },
     description: {
-        fontSize: 12,
+        fontSize: 11,
         color: '#777',
         textAlign: 'left',
     },
@@ -239,16 +239,16 @@ const styles = StyleSheet.create({
     originalPrice: {
         textDecorationLine: 'line-through',
         color: '#777',
-        fontSize: 12,
+        fontSize: 11,
     },
     salePrice: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: 'bold',
         color: '#000000',
         marginTop: 5,
     },
     discountText:{
-        fontSize: 12,
+        fontSize: 10,
         color: '#27ae60',
         fontWeight: 'bold',
         marginTop: 5,

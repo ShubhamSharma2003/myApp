@@ -95,13 +95,13 @@ export const fetchProducts = async () => {
                 type
               }
                media(first: 100) {
-            nodes {
-              previewImage {
-                altText
-                url
+                nodes {
+                  previewImage {
+                    altText
+                    url
+                  }
+                }
               }
-            }
-          }
             }
           }
         }

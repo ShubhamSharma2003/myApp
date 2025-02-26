@@ -5,6 +5,8 @@ import CategoryScreen from '../screens/categoryScreen';
 // import CartScreen from '../screens/CartScreen';
 import WebViewScreen from '../screens/WebViewScreen';
 import ProductPage from '../components/product/ProductPage';
+import CollectionScreen from '../screens/CollectionScreen';
+import FilterScreen from '../screens/FilterScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +38,9 @@ export default function MainStack() {
                 }}
             />
             {/* <Stack.Screen name="CartScreen" component={CartScreen} /> */}
+            <Stack.Screen name="CollectionScreen" component={CollectionScreen} options={{ title: 'Collection' }} />
             <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
+            <Stack.Screen name="FilterScreen" component={FilterScreen} />
         </Stack.Navigator>
     );
 }

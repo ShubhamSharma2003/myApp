@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     header: {
-        paddingTop: 20,
         marginBottom: 10,
     },
     heading: {

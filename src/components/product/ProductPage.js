@@ -125,8 +125,8 @@ const handleAddToCart = async () => {
           <Text style={styles.description}>{formattedUspTags || product.descriptionHtml.replace(/<[^>]*>?/gm, '').substring(0, 50) + "..." || 'Product description goes here.'}</Text>
           <View style={styles.priceContainer}>
             <View style={styles.priceRow}>
-              <Text style={styles.salePrice}> ₹{formatPrice(selectedVariant.price || '₹0')}</Text>
-              <Text style={styles.originalPrice}>₹{formatPrice(selectedVariant?.compareAtPrice || '0')}</Text>
+              <Text style={styles.salePrice}> {formatPrice(selectedVariant.price || '₹0')}</Text>
+              <Text style={styles.originalPrice}>{formatPrice(selectedVariant?.compareAtPrice || '0')}</Text>
               <Text style={styles.discountText}>{calculateDiscount(selectedVariant.price, selectedVariant?.compareAtPrice) || '0% OFF'}</Text>
             </View>
           </View>

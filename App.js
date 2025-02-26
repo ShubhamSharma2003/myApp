@@ -7,7 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Icon from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ShopStack from './src/stacks/ShopStack.js';
-
+import CollectionScreen from './src/screens/CollectionScreen.js';
 import Home from './src/screens/home.js';
 import CategoryScreen from './src/screens/categoryScreen.js';
 import Premium from './src/screens/Premium.js';
@@ -24,6 +24,7 @@ import WebViewScreen from './src/screens/WebViewScreen.js';
 import { createCart } from './api/shopifyApi.js';
 import { CartProvider } from './src/components/universal/CartContext.js';
 import CartInitializer from './src/components/universal/CartInitializer.js'; 
+import FilterScreen from './src/screens/FilterScreen.js';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -129,9 +130,9 @@ const MainStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={MyTabs} />
       <Stack.Screen name="ProductPage" component={ProductPage} />
-      {/* <Stack.Screen name="ShopStack" component={ShopStack} options={{ headerShown: false }} /> */}
-      {/* <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} /> */}
+      <Stack.Screen name="CollectionScreen" component={CollectionScreen} options={{ title: 'Collection' }} />
       <Stack.Screen name="WebViewScreen" component={WebViewScreen} /> 
+      <Stack.Screen name="FilterScreen" component={FilterScreen} />
     </Stack.Navigator>
   );
 };

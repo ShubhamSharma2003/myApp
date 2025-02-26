@@ -1,7 +1,12 @@
 export const formatPrice = (price) => {
-    if (!price) return "N/A";
-    return parseInt(price, 10); 
+  if (!price) return "N/A";
+  
+  // Convert price to number and remove decimals
+  const formattedPrice = parseInt(price, 10); 
+  
+  return `₹${formattedPrice}`; // Ensure ₹ is always prefixed
 };
+
 
 export const calculateDiscount = (minPrice, maxPrice) => {
     if (!minPrice || !maxPrice || minPrice >= maxPrice) return null; // Avoid negative or invalid discounts
