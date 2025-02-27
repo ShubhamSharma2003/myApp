@@ -1,47 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const FilterScroll = ({ filters = [], onSelect }) => {
-  const navigation = useNavigation(); // Access navigation
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  // Get active filters from route params (if any)
+  const selectedVariants = route.params?.selectedVariants || [];
+  const priceRange = route.params?.priceRange || null;
+  const sortBy = route.params?.sortBy || "";
+
+  // Sort Labels Mapping
+  const sortLabels = {
+    lowToHigh: "Price: Low to High",
+    highToLow: "Price: High to Low",
+  };
+
+  // Merge selected variants into filters to ensure they are displayed
+  const allFilters = [...new Set([...filters, ...selectedVariants])];
 
   return (
     <View style={styles.container}>
       {/* Filter Icon */}
-      <TouchableOpacity style={styles.filterIcon} onPress={() => navigation.navigate("FilterScreen")}>
+      <TouchableOpacity 
+        style={styles.filterIcon} 
+        onPress={() => navigation.navigate("FilterScreen", { selectedVariants, priceRange, sortBy })} 
+      >
         <Ionicons name="options-outline" size={24} color="black" />
       </TouchableOpacity>
 
       {/* Scrollable Filter Buttons */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-        {filters.map((filter, index) => (
-          <TouchableOpacity key={index} style={styles.filterButton} onPress={() => onSelect(filter)}>
-            <Text style={styles.filterText}>{filter}</Text>
+        {/* Variant Filters */}
+        {allFilters.map((filter, index) => (
+          <TouchableOpacity 
+            key={index} 
+            style={[styles.filterButton, selectedVariants.includes(filter) && styles.activeFilter]} 
+            onPress={() => {
+              // Navigate to FilterScreen when an active filter is pressed
+              if (selectedVariants.includes(filter)) {
+                navigation.navigate("FilterScreen", { selectedVariants, priceRange, sortBy });
+              } else {
+                onSelect(filter);
+              }
+            }}
+          >
+            <Text style={[styles.filterText, selectedVariants.includes(filter) && styles.activeFilterText]}>
+              {filter}
+            </Text>
           </TouchableOpacity>
         ))}
+
+        {/* Sorting Filters */}
+        {sortBy && (
+          <TouchableOpacity 
+            style={[styles.filterButton, styles.activeFilter]} 
+            onPress={() => navigation.navigate("FilterScreen", { selectedVariants, priceRange, sortBy })} // Navigate to filter screen
+          >
+            <Text style={[styles.filterText, styles.activeFilterText]}>
+              {sortLabels[sortBy]}
+            </Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
-};
-
-
-// Example usage of the component
-const FilterScreen = () => {
-  const [filters, setFilters] = useState([]);
-
-  // Simulating API call to fetch filters
-  useEffect(() => {
-    setTimeout(() => {
-      setFilters(["BESTSELLERS", "NEW LAUNCH", "THE NOISE CHOICE", "CURATED STEALS"]);
-    }, 1000);
-  }, []);
-
-  const handleFilterSelect = (filter) => {
-    console.log("Selected Filter:", filter);
-  };
-
-  return <FilterScroll filters={filters} onSelect={handleFilterSelect} />;
 };
 
 const styles = StyleSheet.create({
@@ -66,10 +91,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginRight: 10,
   },
+  activeFilter: {
+    backgroundColor: "black",
+  },
   filterText: {
     fontSize: 10,
     color: "gray",
   },
+  activeFilterText: {
+    color: "white",
+  },
 });
 
-export default FilterScreen;
+export default FilterScroll;

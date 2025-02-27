@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, SafeAreaView, Animated } from 'react-native';
 import { fetchProducts } from '../../api/shopifyApi';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import HeartIcon from "../../assets/icons/heartIcon.svg";
 import { formatPrice, calculateDiscount, formatUspTags } from '../utils/helper';
 import ProductHeader from '../components/product/ProductHeader';
 import FilterScroll from '../components/universal/FilterScroll';
-
 
 const SkeletonLoader = () => {
     const opacity = new Animated.Value(0.3);
@@ -35,8 +34,15 @@ const SkeletonLoader = () => {
 
 const CollectionScreen = () => {
     const [products, setProducts] = useState([]);
-    const navigation = useNavigation();
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const navigation = useNavigation();
+    const route = useRoute();
+ 
+    // ✅ Get selected filters from `FilterScreen`
+    const selectedVariants = route.params?.selectedVariants || [];
+    const priceRange = route.params?.priceRange || null; // Price filter
+    const sortBy = route.params?.sortBy || "";
 
     useEffect(() => {
         const loadProducts = async () => {
@@ -44,23 +50,46 @@ const CollectionScreen = () => {
             let modifiedProducts = [];
     
             for (let i = 0; i < data.length; i++) {
-                // Always add small product first
                 modifiedProducts.push({ type: 'small', ...data[i] });
-    
-                // Every 5th product after the first 4 should be large
-                if ((modifiedProducts.length ) % 6 === 0) {
+
+                if ((modifiedProducts.length) % 6 === 0) {
                     modifiedProducts.push({ type: 'large', ...data[i] });
                 }
             }
     
             setProducts(modifiedProducts);
             setIsLoading(false);
-
         };
-    
+
         loadProducts();
     }, []);
-    
+
+    useEffect(() => {
+        let filtered = products;
+
+        // ✅ Apply variant filter
+        if (selectedVariants.length > 0) {
+            filtered = filtered.filter(product =>
+                product.variants?.some(variant => selectedVariants.includes(variant.title))
+            );
+        }
+
+        // ✅ Apply price range filter
+        if (priceRange) {
+            filtered = filtered.filter(product => {
+                const productPrice = parseFloat(product.priceRange?.minVariantPrice?.amount);
+                return productPrice <= priceRange; // Only products within price range
+            });
+        }
+
+        if (sortBy === "lowToHigh") {
+            filtered.sort((a, b) => parseFloat(a.priceRange?.minVariantPrice?.amount) - parseFloat(b.priceRange?.minVariantPrice?.amount));
+        } else if (sortBy === "highToLow") {
+            filtered.sort((a, b) => parseFloat(b.priceRange?.minVariantPrice?.amount) - parseFloat(a.priceRange?.minVariantPrice?.amount));
+        }
+
+        setFilteredProducts(filtered);
+    }, [selectedVariants, priceRange, products]);
 
     // ✅ Function to render each product (small or large)
     const renderProduct = ({ item, index }) => {
@@ -135,19 +164,19 @@ const CollectionScreen = () => {
             <ProductHeader style={{ backgroundColor: '#fff' }} />
             <FilterScroll />
 
-        {isLoading ? (
-            <SkeletonLoader />
-        ) : (
-            <FlatList 
-                data={products}
-                renderItem={renderProduct}
-                keyExtractor={(item, index) => index.toString()}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.listContainer}
-            />
-        )}
-    </SafeAreaView>
+            {isLoading ? (
+                <SkeletonLoader />
+            ) : (
+                <FlatList 
+                    data={filteredProducts} // ✅ Use filtered products here
+                    renderItem={renderProduct}
+                    keyExtractor={(item, index) => index.toString()}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.listContainer}
+                />
+            )}
+        </SafeAreaView>
     );
 };
 
@@ -288,5 +317,6 @@ const styles = StyleSheet.create({
         borderRadius: 3,
     },
 });
+
 
 export default CollectionScreen;
