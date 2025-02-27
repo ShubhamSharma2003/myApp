@@ -10,7 +10,9 @@ const FilterScreen = ({ navigation, route }) => {
     const [minPrice, setMinPrice] = useState(1000);
     const [maxPrice, setMaxPrice] = useState(10000);
     const [priceRange, setPriceRange] = useState(route.params?.priceRange || 10000);
-    const [sortBy, setSortBy] = useState(route.params?.sortBy || ''); 
+    const [sortBy, setSortBy] = useState(route.params?.sortBy || '');
+    const [tags, setTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState(route.params?.selectedTags || []);
     const priceRef = useRef(priceRange);
 
     useEffect(() => {
@@ -20,12 +22,16 @@ const FilterScreen = ({ navigation, route }) => {
 
             let variants = new Set();
             let prices = [];
+            let uniqueTags = new Set();
 
             products.forEach(product => {
                 product.variants.forEach(variant => {
                     variants.add(variant.title);
                     if (variant.price) prices.push(parseFloat(variant.price));
                 });
+                if (product.filterTags) {
+                    product.filterTags.forEach(tag => uniqueTags.add(tag));
+                }
             });
 
             if (prices.length > 0) {
@@ -38,21 +44,21 @@ const FilterScreen = ({ navigation, route }) => {
             }
 
             setVariantTitles([...variants]);
+            setTags([...uniqueTags]);
         };
 
         getFilters();
     }, []);
 
-    const toggleSelection = (item) => {
-        setSelectedVariants(prev =>
+    const toggleSelection = (item, setSelected) => {
+        setSelected(prev =>
             prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]
         );
     };
 
     const handleSortSelection = (sortOption) => {
-        setSortBy(prevSortBy => (prevSortBy === sortOption ? '' : sortOption));  
+        setSortBy(prevSortBy => (prevSortBy === sortOption ? '' : sortOption));
     };
-    
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -65,6 +71,7 @@ const FilterScreen = ({ navigation, route }) => {
                     <Text style={styles.headerTitle}>Filters</Text>
                     <TouchableOpacity onPress={() => {
                         setSelectedVariants([]);
+                        setSelectedTags([]);
                         setPriceRange(maxPrice);
                         setSortBy('');
                     }}>
@@ -72,30 +79,29 @@ const FilterScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
 
-
                 {/* Scrollable Filters */}
                 <ScrollView style={styles.scrollContainer}>
-                {/* Sort By Feature */}
-                        <Text style={styles.sortHeading}>Sort By</Text>
-                        <View style={styles.sortContainer}>
-                            <TouchableOpacity
-                                style={[styles.sortOption, sortBy === 'lowToHigh' && styles.sortOptionSelected]}
-                                onPress={() => handleSortSelection('lowToHigh')}
-                            >
-                                <Text style={[styles.sortText, sortBy === 'lowToHigh' && styles.sortTextSelected]}>
-                                    Price: Low to High
-                                </Text>
-                            </TouchableOpacity>
+                    {/* Sort By Feature */}
+                    <Text style={styles.sortHeading}>Sort By</Text>
+                    <View style={styles.sortContainer}>
+                        <TouchableOpacity
+                            style={[styles.sortOption, sortBy === 'lowToHigh' && styles.sortOptionSelected]}
+                            onPress={() => handleSortSelection('lowToHigh')}
+                        >
+                            <Text style={[styles.sortText, sortBy === 'lowToHigh' && styles.sortTextSelected]}>
+                                Price: Low to High
+                            </Text>
+                        </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={[styles.sortOption, sortBy === 'highToLow' && styles.sortOptionSelected]}
-                                onPress={() => handleSortSelection('highToLow')}
-                            >
-                                <Text style={[styles.sortText, sortBy === 'highToLow' && styles.sortTextSelected]}>
-                                    Price: High to Low
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity
+                            style={[styles.sortOption, sortBy === 'highToLow' && styles.sortOptionSelected]}
+                            onPress={() => handleSortSelection('highToLow')}
+                        >
+                            <Text style={[styles.sortText, sortBy === 'highToLow' && styles.sortTextSelected]}>
+                                Price: High to Low
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
                     {/* Price Filter */}
                     <Text style={styles.heading}>Price Range</Text>
@@ -113,6 +119,22 @@ const FilterScreen = ({ navigation, route }) => {
                     />
                     <Text style={styles.sliderText}>Up to ₹{priceRange}</Text>
 
+                    {/* Tag Filter */}
+                    <Text style={styles.heading}>Filter by Tags</Text>
+                    <View style={styles.tagContainer}>
+                        {tags.map((tag, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={[styles.tag, selectedTags.includes(tag) && styles.tagSelected]}
+                                onPress={() => toggleSelection(tag, setSelectedTags)}
+                            >
+                                <Text style={[styles.tagText, selectedTags.includes(tag) && styles.tagTextSelected]}>
+                                    {tag}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+
                     {/* Variant Filter */}
                     <Text style={styles.heading}>Color Variants</Text>
                     <View style={styles.chipContainer}>
@@ -120,7 +142,7 @@ const FilterScreen = ({ navigation, route }) => {
                             <TouchableOpacity
                                 key={index}
                                 style={[styles.chip, selectedVariants.includes(variant) && styles.chipSelected]}
-                                onPress={() => toggleSelection(variant)}
+                                onPress={() => toggleSelection(variant, setSelectedVariants)}
                             >
                                 <Text style={[styles.chipText, selectedVariants.includes(variant) && styles.chipTextSelected]}>
                                     {variant}
@@ -135,8 +157,7 @@ const FilterScreen = ({ navigation, route }) => {
                 <View style={styles.stickyButtonContainer}>
                     <TouchableOpacity
                         style={styles.applyButton}
-                        onPress={() => navigation.navigate('CollectionScreen', { selectedVariants, priceRange, sortBy })}
-                    >
+                            onPress={() => navigation.navigate('CollectionScreen', { selectedVariants, selectedTags, priceRange, sortBy, tags })}                    >
                         <Text style={styles.applyButtonText}>Apply Filters</Text>
                     </TouchableOpacity>
                 </View>
@@ -158,6 +179,11 @@ const styles = StyleSheet.create({
     chipSelected: { backgroundColor: "black" },
     chipText: { color: "black" },
     chipTextSelected: { color: "white" },
+    tagContainer: { flexDirection: "row", flexWrap: "wrap", marginBottom: 10 },
+    tag: { paddingVertical: 6, paddingHorizontal: 12, borderWidth: 0.6, borderColor: "#ccc", margin: 4 },
+    tagSelected: { backgroundColor: "black" },
+    tagText: { color: "black" },
+    tagTextSelected: { color: "white" },
     slider: { width: "100%", height: 20, marginVertical: 10 },
     sliderText: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
 
@@ -165,14 +191,14 @@ const styles = StyleSheet.create({
     sortHeading: {
         fontWeight: "bold",
         marginBottom: 5,
-    },  
-    sortContainer: {  
-        flexDirection: "row",  
-        justifyContent: "space-between",  
-        paddingVertical: 5,  
-        paddingBottom:10,
     },
-    sortOption: { paddingVertical: 10, paddingHorizontal: 15, borderWidth: 0.6, borderColor: "#ccc"},
+    sortContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingVertical: 5,
+        paddingBottom: 10,
+    },
+    sortOption: { paddingVertical: 5, paddingHorizontal: 15, borderWidth: 0.6, borderColor: "#ccc" },
     sortOptionSelected: { backgroundColor: "black" },
     sortText: { fontSize: 14, color: "black" },
     sortTextSelected: { color: "white", fontWeight: "bold" },

@@ -39,8 +39,9 @@ const CollectionScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
  
-    // ✅ Get selected filters from `FilterScreen`
+    // Get selected filters from `FilterScreen`
     const selectedVariants = route.params?.selectedVariants || [];
+    const selectedTags = route.params?.selectedTags || []; // Tag filter
     const priceRange = route.params?.priceRange || null; // Price filter
     const sortBy = route.params?.sortBy || "";
 
@@ -65,34 +66,47 @@ const CollectionScreen = () => {
     }, []);
 
     useEffect(() => {
-        let filtered = filteredProducts.length > 0 ? filteredProducts : products;
+        let filtered = products;
     
-
-        // ✅ Apply variant filter
+        console.log("Initial Products:", products.length);
+    
+        // Apply variant filter
         if (selectedVariants.length > 0) {
             filtered = filtered.filter(product =>
                 product.variants?.some(variant => selectedVariants.includes(variant.title))
             );
+            console.log("After Variant Filter:", filtered.length);
         }
-
-        // ✅ Apply price range filter
+    
+        // Apply tag filter
+        if (selectedTags.length > 0) {
+            filtered = filtered.filter(product =>
+                product.filterTags?.some(tag => selectedTags.includes(tag))
+            );
+            console.log("After Tag Filter:", filtered.length);
+        }
+    
+        // Apply price range filter
         if (priceRange) {
             filtered = filtered.filter(product => {
                 const productPrice = parseFloat(product.priceRange?.minVariantPrice?.amount);
                 return productPrice <= priceRange; // Only products within price range
             });
+            console.log("After Price Range Filter:", filtered.length);
         }
-
+    
+        // Apply sorting
         if (sortBy === "lowToHigh") {
             filtered.sort((a, b) => parseFloat(a.priceRange?.minVariantPrice?.amount) - parseFloat(b.priceRange?.minVariantPrice?.amount));
         } else if (sortBy === "highToLow") {
             filtered.sort((a, b) => parseFloat(b.priceRange?.minVariantPrice?.amount) - parseFloat(a.priceRange?.minVariantPrice?.amount));
         }
-
+    
+        console.log("Final Filtered Products:", filtered.length);
         setFilteredProducts(filtered);
-    }, [selectedVariants, priceRange, products]);
+    }, [selectedVariants, selectedTags, priceRange, products]);
 
-    // ✅ Function to render each product (small or large)
+    // Function to render each product (small or large)
     const renderProduct = ({ item, index }) => {
         const imageUrl = item.featuredImage ? item.featuredImage.url : 'https://via.placeholder.com/150';
         const title = item.metafield?.value || item.title;
@@ -169,7 +183,7 @@ const CollectionScreen = () => {
                 <SkeletonLoader />
             ) : (
                 <FlatList 
-                    data={filteredProducts} // ✅ Use filtered products here
+                    data={filteredProducts} // Use filtered products here
                     renderItem={renderProduct}
                     keyExtractor={(item, index) => index.toString()}
                     numColumns={2}
@@ -320,6 +334,5 @@ const styles = StyleSheet.create({
         borderRadius: 3,
     },
 });
-
 
 export default CollectionScreen;

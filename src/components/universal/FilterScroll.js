@@ -1,119 +1,88 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { fetchProducts } from "../../../api/shopifyApi";
 
 const FilterScroll = ({ filters = [], onSelect = () => {} }) => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [extractedTags, setExtractedTags] = useState([]); 
-  const [allProducts, setAllProducts] = useState([]); 
-  const [activeTag, setActiveTag] = useState(null); 
+  const [activeFilter, setActiveFilter] = useState(null);
+  const [selectedTags, setSelectedTags] = useState(route.params?.selectedTags || []);
+  const extractedTags = route.params?.tags || [];
 
-  // Get active filters from route params (if any)
   const selectedVariants = route.params?.selectedVariants || [];
   const priceRange = route.params?.priceRange || null;
   const sortBy = route.params?.sortBy || "";
 
-  // ✅ Sort Labels Mapping
   const sortLabels = {
     lowToHigh: "Price: Low to High",
     highToLow: "Price: High to Low",
   };
 
-  // ✅ Mapping extracted tags to user-friendly text
-  const tagLabelMap = {
-    "bestsellers-gadgets": "Best Sellers",
-    "female health monitor": "Female Health Monitor",
-  };
-
-  // ✅ Fetch product data and extract `extractedTags`
-  useEffect(() => {
-    const getFilters = async () => {
-      const products = await fetchProducts();
-      if (!products) return;
-
-      console.log("🛍 Products Fetched:", products.length);
-      setAllProducts(products);
-
-      // ✅ Extract unique filterTags from all products
-      const uniqueTags = [
-        ...new Set(products.flatMap(product => (product.filterTags ? product.filterTags : [])))
-      ];
-      setExtractedTags(uniqueTags);
-
-      console.log("✅ Extracted Filter Tags:", uniqueTags);
-    };
-
-    getFilters();
-  }, []);
-
-  // ✅ Handle tag selection (toggle active state)
   const handleTagSelect = (tag) => {
-    console.log("🔍 Selected Tag:", tag);
-
-    if (typeof onSelect !== "function") {
-      console.error("❌ onSelect is not a valid function");
-      return;
+    // Always navigate to the filter screen when clicking an active filter
+    if (selectedVariants.includes(tag) || selectedTags.includes(tag) || sortBy === tag) {
+        navigation.navigate("FilterScreen", { selectedVariants, selectedTags, priceRange, sortBy });
+        return;
     }
 
-    if (activeTag === tag) {
-      setActiveTag(null);
-      onSelect(allProducts);
-      return;
+    // Open filter screen for "Filter by Tags" or "Color Variants"
+    if (tag === "Filter by Tags" || tag === "Color Variants") {
+        navigation.navigate("FilterScreen", { selectedVariants, selectedTags, priceRange, sortBy });
+        return;
     }
 
-    setActiveTag(tag); // ✅ Set selected tag as active
 
-    const filteredProducts = allProducts.filter(product => product.filterTags.includes(tag));
+    const updatedTags = selectedTags.includes(tag)
+        ? selectedTags.filter((t) => t !== tag)
+        : [...selectedTags, tag];
 
-    console.log("✅ Filtered Products:", filteredProducts.length);
-    onSelect(filteredProducts);
-  };
+    setSelectedTags(updatedTags);
+    onSelect(updatedTags);
+};
 
-  // ✅ Merge all filters (from props + extractedTags + selectedVariants)
-  const allFilters = [...new Set([...filters, ...extractedTags, ...selectedVariants])];
+
+  // Merge all filters and add placeholder if no tags are selected
+  const allFilters = [...new Set([...filters, ...selectedVariants, ...selectedTags])];
+
+  // Placeholder if no tags are selected
+  const displayFilters = allFilters.length > 0 ? allFilters : ["Filter by Tags", "Color Variants"];
 
   return (
     <View style={styles.container}>
       {/* Filter Icon */}
       <TouchableOpacity 
         style={styles.filterIcon} 
-        onPress={() => navigation.navigate("FilterScreen", { selectedVariants, priceRange, sortBy })} 
+        onPress={() => navigation.navigate("FilterScreen", { selectedVariants, selectedTags, priceRange, sortBy })} 
       >
         <Ionicons name="options-outline" size={24} color="black" />
       </TouchableOpacity>
 
       {/* Scrollable Filter Buttons */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-        {allFilters.map((filter, index) => {
-          const displayText = tagLabelMap[filter] || filter; // ✅ Show mapped name if available, else show original tag
-
-          return (
-            <TouchableOpacity 
-              key={index} 
-              style={[
-                styles.filterButton, 
-                (activeTag === filter || selectedVariants.includes(filter)) && styles.activeFilter 
-              ]} 
-              onPress={() => handleTagSelect(filter)}
-            >
-              <Text style={[
-                styles.filterText, 
-                (activeTag === filter || selectedVariants.includes(filter)) && styles.activeFilterText 
-              ]}>
-                {displayText}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+        {displayFilters.map((filter, index) => (
+          <TouchableOpacity 
+            key={index} 
+            style={[
+              styles.filterButton, 
+              (activeFilter === filter || selectedVariants.includes(filter) || selectedTags.includes(filter)) && styles.activeFilter
+            ]} 
+            onPress={() => handleTagSelect(filter)}
+          >
+            <Text style={[
+              styles.filterText, 
+              (activeFilter === filter || selectedVariants.includes(filter) || selectedTags.includes(filter)) && styles.activeFilterText
+            ]}>
+              {filter}
+            </Text>
+          </TouchableOpacity>
+        ))}
 
         {/* Sorting Filters */}
         {sortBy && (
           <TouchableOpacity 
             style={[styles.filterButton, styles.activeFilter]} 
-            onPress={() => navigation.navigate("FilterScreen", { selectedVariants, priceRange, sortBy })}
+            onPress={() => navigation.navigate("FilterScreen", { selectedVariants, selectedTags, priceRange, sortBy })}
           >
             <Text style={[styles.filterText, styles.activeFilterText]}>
               {sortLabels[sortBy]}
@@ -129,7 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 50,
+    marginTop: 50,
     paddingHorizontal: 10,
   },
   filterIcon: {
