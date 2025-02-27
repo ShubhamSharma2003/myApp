@@ -1,26 +1,26 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation, useNavigationState } from "@react-navigation/native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import HeartIcon from "../../../assets/icons/heartIcon.svg";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-const ProductHeader = ({ style }) => {
+const ProductHeader = ({ handle, style }) => {
     const navigation = useNavigation();
-    
-    // Get the current route name in a single call
-    const currentRoute = useNavigationState(state => state.routes[state.index]?.name);
 
     const handleBackPress = () => {
-        navigation.goBack(); 
+        navigation.goBack();
     };
 
     return (
         <View style={[styles.headerContainer, style]}>
             <View style={styles.topRow}>
-                <TouchableOpacity onPress={handleBackPress} style={styles.icon}>
+                {/* Back button with handle name */}
+                <TouchableOpacity onPress={handleBackPress} style={styles.leftContainer}>
                     <Ionicons name="return-down-back" size={24} color="black" />
+                    <Text style={styles.handleText}>{handle}</Text>
                 </TouchableOpacity>
 
+                {/* Right icons */}
                 <View style={styles.rightIcons}>
                     <Ionicons name="share-social-outline" size={24} color="black" />
                     <HeartIcon width={24} height={24} />
@@ -48,6 +48,16 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         paddingBottom: 5,
+    },
+    leftContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    handleText: {
+        marginLeft: 8,
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "black",
     },
     rightIcons: {
         flexDirection: "row",

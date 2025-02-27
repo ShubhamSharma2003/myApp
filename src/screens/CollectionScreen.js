@@ -9,6 +9,7 @@ import FilterScroll from '../components/universal/FilterScroll';
 
 const SkeletonLoader = () => {
     const opacity = new Animated.Value(0.3);
+    
 
     useEffect(() => {
         Animated.loop(
@@ -34,27 +35,32 @@ const SkeletonLoader = () => {
 
 const CollectionScreen = () => {
     const [products, setProducts] = useState([]);
+    const [collectionData, setCollectionData] = useState({});
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigation = useNavigation();
     const route = useRoute();
+    const productHandle = route.params?.handle || collectionData?.title; 
  
     // Get selected filters from `FilterScreen`
     const selectedVariants = route.params?.selectedVariants || [];
     const selectedTags = route.params?.selectedTags || []; // Tag filter
     const priceRange = route.params?.priceRange || null; // Price filter
     const sortBy = route.params?.sortBy || "";
-
+    console.log(collectionData, "collectionDataa");
     useEffect(() => {
         const loadProducts = async () => {
-            const data = await fetchProducts();
+            const data = await fetchProducts("smart-watches");
+        
+            
+            setCollectionData(data);
             let modifiedProducts = [];
     
-            for (let i = 0; i < data.length; i++) {
-                modifiedProducts.push({ type: 'small', ...data[i] });
+            for (let i = 0; i < data?.products.length; i++) {
+                modifiedProducts.push({ type: 'small', ...data?.products[i] });
 
                 if ((modifiedProducts.length) % 6 === 0) {
-                    modifiedProducts.push({ type: 'large', ...data[i] });
+                    modifiedProducts.push({ type: 'large', ...data?.products[i] });
                 }
             }
     
@@ -176,7 +182,7 @@ const CollectionScreen = () => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ProductHeader style={{ backgroundColor: '#fff' }} />
+            <ProductHeader handle={productHandle} style={{ backgroundColor: '#fff' }} />
             <FilterScroll filters={[]} onSelect={setFilteredProducts} />
 
             {isLoading ? (

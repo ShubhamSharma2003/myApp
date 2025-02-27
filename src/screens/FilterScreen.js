@@ -17,7 +17,7 @@ const FilterScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         const getFilters = async () => {
-            const products = await fetchProducts();
+            const products = await fetchProducts("smart-watches");
             if (!products) return;
 
             let variants = new Set();

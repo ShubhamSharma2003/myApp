@@ -22,7 +22,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
         const loadProducts = async () => {
             try {
                 setLoading(true);
-                const data = await fetchProducts();
+                const data = await fetchProducts("smart-watches");
                 setProducts(data);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -67,7 +67,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                             </View>
                         ))
                     ) : (
-                        products.map((item) => {
+                        products?.products.map((item) => {
                             const imageUrl = item.featuredImage ? item.featuredImage.url : 'https://via.placeholder.com/150';
                             const title = item.metafield?.value || item.title;
                             const price = item.priceRange?.minVariantPrice?.amount;

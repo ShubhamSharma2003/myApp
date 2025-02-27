@@ -9,7 +9,7 @@ export default function ProductList() {
     useEffect(() => {
         const loadProducts = async () => {
             try {
-                const data = await fetchProducts();
+                const data = await fetchProducts("smart-watches");
                 setProducts(data);
             } catch (error) {
                 console.error("Error loading products:", error);

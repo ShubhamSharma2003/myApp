@@ -34,8 +34,8 @@ const shopifyFetch = async ({ query, variables = {} }) => {
 export { shopifyFetch };
 
 
-export const fetchProducts = async () => {
-  const query = gql`
+export const fetchProducts = async (handle) => {
+  const query = `
     query getCollectionByHandle($handle: String!) {
       collectionByHandle(handle: $handle) {
         id
@@ -45,7 +45,6 @@ export const fetchProducts = async () => {
             node {
               id
               title
-              tags
               descriptionHtml
               handle
               featuredImage {
@@ -89,12 +88,10 @@ export const fetchProducts = async () => {
                 }
               }
               metafield(namespace: "product_details", key: "product_title") {
-                namespace
                 key
                 value
-                type
               }
-               media(first: 100) {
+              media(first: 100) {
                 nodes {
                   previewImage {
                     altText
@@ -102,6 +99,7 @@ export const fetchProducts = async () => {
                   }
                 }
               }
+              tags
             }
           }
         }
@@ -110,62 +108,56 @@ export const fetchProducts = async () => {
   `;
 
   try {
-    console.log("Fetching products...");
+    console.log(`Fetching products for handle: ${handle}`);
 
-    const headers = {
-      "X-Shopify-Storefront-Access-Token": SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-      "Content-Type": "application/json",
+    const variables = { handle };
+    const response = await shopifyFetch({ query, variables });
+
+    // Extract product data from response
+    const products = response?.data?.collectionByHandle?.products?.edges.map(({ node }) => ({
+      id: node.id,
+      title: node.title,
+      descriptionHtml: node.descriptionHtml,
+      handle: node.handle,
+      featuredImage: node.featuredImage,
+      priceRange: node.priceRange,
+      variants: node.variants.edges.map(({ node: variant }) => ({
+        id: variant.id,
+        title: variant.title,
+        sku: variant.sku,
+        price: variant.price.amount,
+        compareAtPrice: variant.compareAtPrice?.amount || null,
+        currency: variant.price.currencyCode,
+        availableForSale: variant.availableForSale,
+        selectedOptions: variant.selectedOptions.reduce((acc, option) => {
+          acc[option.name] = option.value;
+          return acc;
+        }, {}),
+        image: variant.image?.url || null,
+      })),
+      media: node.media?.nodes.map(media => ({
+        url: media.previewImage?.url || null,
+        altText: media.previewImage?.altText || null,
+      })) || [],
+      metafield: node.metafield ? { key: node.metafield.key, value: node.metafield.value } : null,
+      uspTags: node.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
+      filterTags: node.tags.filter(tag =>
+        ["bestsellers-gadgets", "female health monitor"].includes(tag.toLowerCase())
+      ),
+    })) || [];
+
+    const collectionData = {
+      title:  response?.data?.collectionByHandle?.title || "",
+      products: products,
     };
 
-    const variables = { handle: "smart-watches" };
-
-    const response = await request(SHOPIFY_GRAPHQL_URL, query, variables, headers);
-    // Extract products from response
-    const products = response.collectionByHandle?.products?.edges.map(({ node }) => {
-    
-      return {
-        id: node.id,
-        title: node.title,
-        descriptionHtml: node.descriptionHtml,
-        handle: node.handle,
-        featuredImage: node.featuredImage,
-        priceRange: node.priceRange,
-    
-
-        variants: node.variants.edges.map(({ node: variant }) => {
-          return {
-            id: variant.id,
-            title: variant.title,
-            sku: variant.sku,
-            price: variant.price.amount, 
-            compareAtPrice: variant.compareAtPrice?.amount || null,
-            currency: variant.price.currencyCode, 
-            availableForSale: variant.availableForSale,
-            selectedOptions: variant.selectedOptions.reduce((acc, option) => {
-              acc[option.name] = option.value;
-              return acc;
-            }, {}), 
-            image: variant.image?.url || null,
-          };
-        }),
-        media: node.media?.nodes.map(media => ({
-          url: media.previewImage?.url || null,
-          altText: media.previewImage?.altText || null,
-        })) || [],
-        metafield: node.metafield ? { key: node.metafield.key, value: node.metafield.value } : null,
-        uspTags: node.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
-        filterTags: node.tags.filter(tag =>
-          ["bestsellers-gadgets", "female health monitor"].includes(tag.toLowerCase())
-        ), // Extracting relevant filters
-      };
-    }) || [];
-    // console.log("Fetched products:", products);
-    return products;
+    return collectionData;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("❌ Error fetching products:", error);
     return [];
   }
 };
+
 
 
 export const createCart = async () => {
@@ -186,7 +178,7 @@ export const createCart = async () => {
 
 
 export const addToCart = async (variantId, quantity = 1) => {
-  console.log(variantId, "Variantttt")
+  // console.log(variantId, "Variantttt")
   let cartId = await getCartId();
 
   if (!cartId) {
