@@ -32,7 +32,7 @@ export default function ShopStack() {
                     title: route.params.categoryName
                 })}
             />
-            <Stack.Screen name="CollectionScreen" component={CollectionScreen} options={{ title: 'Collection' }} />
+            
 
             {/* <Stack.Screen name="CartScreen" component={CartScreen} /> */}
         </Stack.Navigator>

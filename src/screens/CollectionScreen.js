@@ -65,7 +65,8 @@ const CollectionScreen = () => {
     }, []);
 
     useEffect(() => {
-        let filtered = products;
+        let filtered = filteredProducts.length > 0 ? filteredProducts : products;
+    
 
         // ✅ Apply variant filter
         if (selectedVariants.length > 0) {
@@ -133,7 +134,7 @@ const CollectionScreen = () => {
         return (
             <View style={styles.smallCardContainer}>
                 <TouchableOpacity 
-                    style={styles.card} 
+                    style={styles.collectionCard} 
                     onPress={() => navigation.navigate('ProductPage', { product: item })}
                 >
                     <TouchableOpacity style={styles.heartIcon}>
@@ -162,7 +163,7 @@ const CollectionScreen = () => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <ProductHeader style={{ backgroundColor: '#fff' }} />
-            <FilterScroll />
+            <FilterScroll filters={[]} onSelect={setFilteredProducts} />
 
             {isLoading ? (
                 <SkeletonLoader />
@@ -194,13 +195,15 @@ const styles = StyleSheet.create({
         width: '48%', 
         margin: '1%',
     },
-    card: {
+    collectionCard: {
         backgroundColor: '#f9f9f9',
         padding: 9,
         alignItems: 'flex-start',
         elevation: 2,
         paddingTop:5,
-        height: 210,
+        height: 'auto',
+        flexGrow: 1,  // Ensures equal height distribution
+        justifyContent: 'space-between', // Distributes content evenly
     },
     heartIcon: {
         position: 'absolute',

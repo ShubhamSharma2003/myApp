@@ -40,7 +40,7 @@ export const fetchProducts = async () => {
       collectionByHandle(handle: $handle) {
         id
         title
-        products(first: 10) {
+        products(first: 100) {
           edges {
             node {
               id
@@ -154,10 +154,11 @@ export const fetchProducts = async () => {
         })) || [],
         metafield: node.metafield ? { key: node.metafield.key, value: node.metafield.value } : null,
         uspTags: node.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
+        filterTags: node.tags.filter(tag =>
+          ["bestsellers-gadgets", "female health monitor"].includes(tag.toLowerCase())
+        ), // Extracting relevant filters
       };
     }) || [];
-    
-    
     // console.log("Fetched products:", products);
     return products;
   } catch (error) {

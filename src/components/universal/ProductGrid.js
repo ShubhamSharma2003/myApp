@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         borderWidth: 1,
         borderColor: '#eee',
-        paddingVertical: 10,
+        paddingVertical: 10,       
     },
     heartIcon: {
         position: 'absolute',
