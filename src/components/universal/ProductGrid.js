@@ -75,44 +75,65 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                             const formattedUspTags = formatUspTags(item.uspTags);
 
                             return (
-                                <TouchableOpacity 
-                                    key={item.id} 
-                                    style={styles.card} 
-                                    onPress={() => navigation.navigate('ProductPage', { product: item })}
-                                >
-                                    <TouchableOpacity style={styles.heartIcon}>
-                                        <HeartIcon width={18} height={18} />
-                                    </TouchableOpacity>
-                                    
-                                    <Image 
-                                        source={{ uri: imageUrl }} 
-                                        style={styles.image} 
-                                    />
-                                    
-                                    <Text style={styles.name}>{title}</Text> 
-                                    
-                                    <Text style={styles.description}>
-                                        {formattedUspTags || item.descriptionHtml.replace(/<[^>]*>?/gm, '').substring(0, 50) + "..."}
-                                    </Text>
-
-
-                                <View style={styles.priceContainer}>
-                                    <Text style={styles.salePrice}>
-                                            {formatPrice(item?.priceRange?.minVariantPrice?.amount)}
-                                    </Text>
-                                    {item.priceRange?.maxVariantPrice?.amount && (
-                                        <Text style={styles.originalPrice}>
-                                           {formatPrice(item?.variants?.[0]?.compareAtPrice || '0')}
-                                        </Text>
-                                    )}
-                                    {item.priceRange?.minVariantPrice?.amount && item.priceRange?.maxVariantPrice?.amount && (
-                                        <Text style={styles.discountText}>
-                                            {calculateDiscount(item.priceRange?.minVariantPrice?.amount, item.priceRange?.maxVariantPrice?.amount)}
-                                        </Text>
-                                    )}
-                                </View>
-
+                              <TouchableOpacity
+                                key={item.id}
+                                style={styles.card}
+                                onPress={() =>
+                                  navigation.navigate("ProductPage", {
+                                    product: item,
+                                  })
+                                }
+                              >
+                                <TouchableOpacity style={styles.heartIcon}>
+                                  <HeartIcon width={18} height={18} />
                                 </TouchableOpacity>
+
+                                <Image
+                                  source={{ uri: imageUrl }}
+                                  style={styles.image}
+                                />
+
+                                <View style={styles.infoContainer}>
+                                <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{title}
+                                </Text>
+
+
+                                  <Text style={styles.description}>
+                                    
+                                    {formattedUspTags }
+                                  </Text>
+
+                                  <View style={styles.priceContainer}>
+                                    <Text style={styles.salePrice}>
+                                      {formatPrice(
+                                        item?.priceRange?.minVariantPrice
+                                          ?.amount
+                                      )}
+                                    </Text>
+                                    {item.priceRange?.maxVariantPrice
+                                      ?.amount && (
+                                      <Text style={styles.originalPrice}>
+                                        {formatPrice(
+                                          item?.variants?.[0]?.compareAtPrice ||
+                                            "0"
+                                        )}
+                                      </Text>
+                                    )}
+                                    {item.priceRange?.minVariantPrice?.amount &&
+                                      item.priceRange?.maxVariantPrice
+                                        ?.amount && (
+                                        <Text style={styles.discountText}>
+                                          {calculateDiscount(
+                                            item.priceRange?.minVariantPrice
+                                              ?.amount,
+                                            item.priceRange?.maxVariantPrice
+                                              ?.amount
+                                          )}
+                                        </Text>
+                                      )}
+                                  </View>
+                                </View>
+                              </TouchableOpacity>
                             );
                         })
                     )}
@@ -204,8 +225,11 @@ const styles = StyleSheet.create({
         marginRight: 7,
         alignItems: 'flex-start',
         borderWidth: 1,
+        // alignItems: 'baseline',
+        // flexGrow: 1,  
+        // height: 220,
         borderColor: '#eee',
-        paddingVertical: 10,       
+        // paddingVertical: 10,       
     },
     heartIcon: {
         position: 'absolute',
@@ -220,11 +244,21 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         marginBottom: 10,
     },
+    infoContainer: {
+        width: '100%',
+        alignItems: 'flex-start',
+        paddingTop: 5,
+        paddingBottom: 10,
+    },
+    
     name: {
         fontSize: 15,
         fontWeight: 'bold',
         textAlign: 'left',
+        lineHeight: 20, // Ensures consistent spacing between lines
+        width: '100%',  // Ensures text wraps properly
     },
+    
     description: {
         fontSize: 11,
         color: '#777',

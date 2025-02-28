@@ -222,8 +222,7 @@ const styles = StyleSheet.create({
         elevation: 2,
         paddingTop:5,
         height: 'auto',
-        flexGrow: 1,  // Ensures equal height distribution
-        justifyContent: 'space-between', // Distributes content evenly
+        flexGrow: 1,  
     },
     heartIcon: {
         position: 'absolute',

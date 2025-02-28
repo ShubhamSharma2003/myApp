@@ -14,10 +14,20 @@ export const calculateDiscount = (minPrice, maxPrice) => {
 };
 
 export const formatUspTags = (uspTags) => {
-    return Array.isArray(uspTags) 
-        ? uspTags.map(tag => tag.replace(/^usp\d*_?/i, "")).join(" | ")
-        : "";
+  if (!Array.isArray(uspTags)) return "";
+
+  // Match usp1_, usp_1_, usp2_, usp_2_
+  const filteredTags = uspTags
+    .filter(tag => /^usp[_]?1[_]?|^usp[_]?2[_]?/i.test(tag)) // Match usp1_, usp_1_, usp2_, usp_2_
+    .map(tag => tag.replace(/^usp[_]?1[_]?|^usp[_]?[_]?/i, "")) // Remove only the prefix, keeping numbers
+
+  // Limit to max 2 tags and join with " | "
+  return filteredTags.slice(0, 2).join(" | "); 
 };
+
+
+
+
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
