@@ -38,3 +38,7 @@ export const getCartId = async () => {
 export const setCartId = async (cartId) => {
   await AsyncStorage.setItem('cart_id', cartId);
 };
+
+export const formatHandleToTitle = (handle) => {
+  return handle ? handle.replace(/[-_]/g, " ").toUpperCase() : "";
+};

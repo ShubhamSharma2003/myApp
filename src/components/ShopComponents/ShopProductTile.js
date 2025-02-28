@@ -17,7 +17,7 @@ const ShopProductTiles = ({ categoryHandle  }) => {
     useEffect(() => {
         const loadProducts = async () => {
             setLoading(true);
-            console.log(`Fetching products for category handle: ${categoryHandle}`);
+            // console.log(`Fetching products for category handle: ${categoryHandle}`);
             const data = await fetchProducts(categoryHandle);
             setProducts(data);
             setCategoryName(categoryHandle.replace("-", " ").toUpperCase());
@@ -31,7 +31,7 @@ const ShopProductTiles = ({ categoryHandle  }) => {
         <View style={styles.shopContainer}>
             <View style={styles.shopHeader}>
                 <Text style={styles.shopHeading}>{categoryName}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('CollectionScreen')} style={styles.shopSeeAllButton}>
+                <TouchableOpacity onPress={() => navigation.navigate('CollectionScreen', { handle: categoryHandle })} style={styles.shopSeeAllButton}>
                     <Text style={styles.shopSeeAllText}>SEE ALL →</Text>
                 </TouchableOpacity>
             </View>

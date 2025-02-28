@@ -6,6 +6,7 @@ import HeartIcon from "../../assets/icons/heartIcon.svg";
 import { formatPrice, calculateDiscount, formatUspTags } from '../utils/helper';
 import ProductHeader from '../components/product/ProductHeader';
 import FilterScroll from '../components/universal/FilterScroll';
+import { formatHandleToTitle } from '../utils/helper';
 
 const SkeletonLoader = () => {
     const opacity = new Animated.Value(0.3);
@@ -33,7 +34,7 @@ const SkeletonLoader = () => {
     );
 };
 
-const CollectionScreen = ({ handle }) => {
+const CollectionScreen = () => {
     const [products, setProducts] = useState([]);
     const [collectionData, setCollectionData] = useState({});
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -41,6 +42,9 @@ const CollectionScreen = ({ handle }) => {
     const navigation = useNavigation();
     const route = useRoute();
     const productHandle = route.params?.handle || collectionData?.title; 
+
+    const productHandleTitle = formatHandleToTitle(productHandle);
+
  
     // Get selected filters from `FilterScreen`
     const selectedVariants = route.params?.selectedVariants || [];
@@ -50,7 +54,7 @@ const CollectionScreen = ({ handle }) => {
 
     useEffect(() => {
         const loadProducts = async () => {
-            const data = await fetchProducts("smart-watches");
+            const data = await fetchProducts(productHandle);
         
             
             setCollectionData(data);
@@ -69,7 +73,7 @@ const CollectionScreen = ({ handle }) => {
         };
 
         loadProducts();
-    }, []);
+    }, [productHandle]);
 
     useEffect(() => {
         let filtered = products;
@@ -182,7 +186,7 @@ const CollectionScreen = ({ handle }) => {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ProductHeader handle={productHandle} style={{ backgroundColor: '#fff' }} />
+            <ProductHeader handle={productHandleTitle} style={{ backgroundColor: '#fff' }} />
             <FilterScroll filters={[]} onSelect={setFilteredProducts} />
 
             {isLoading ? (

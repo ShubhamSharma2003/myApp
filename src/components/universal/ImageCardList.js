@@ -3,10 +3,10 @@ import { View, Text, Image, StyleSheet, ScrollView, Animated, Pressable } from '
 import { useNavigation } from '@react-navigation/native';
 
 const categories = [
-    { label: 'SHOP SMARTWATCH', slug: 'smartwatch', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_1.png?v=1739523096' },
-    { label: 'SHOP AUDIO', slug: 'audio', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_2.png?v=1739523656' },
-    { label: 'SHOP SPEAKERS', slug: 'speakers', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_1.png?v=1739523096' },
-    { label: 'SHOP ACCESSORIES', slug: 'accessories', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_2.png?v=1739523656' },
+    { label: 'SHOP SMARTWATCH', handle: 'smart-watches', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_1.png?v=1739523096' },
+    { label: 'SHOP AUDIO', handle: 'anc-earbuds', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_2.png?v=1739523656' },
+    { label: 'SHOP SPEAKERS', handle: 'speakers', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_1.png?v=1739523096' },
+    { label: 'SHOP ACCESSORIES', handle: 'accessories', imageSource: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Black_and_Gray_Minimalist_LinkedIn_Banner_2.png?v=1739523656' },
 ];
 
 // **Category Card Component (With Animation)**
@@ -32,7 +32,7 @@ const CategoryCard = ({ item, onPress }) => {
     return (
         <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
             <Pressable
-                onPress={() => onPress(item.slug)}
+                onPress={() => onPress(item.handle)}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
             >
@@ -48,14 +48,9 @@ const CategoryCard = ({ item, onPress }) => {
 // **Main Component**
 const ImageCardList = () => {
     const navigation = useNavigation();
-    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        setTimeout(() => setIsLoading(false), 500);
-    }, []);
-
-    const handleCategoryPress = (slug) => {
-        navigation.navigate('CollectionScreen', { category: slug });
+    const handleCategoryPress = (handle) => {
+        navigation.navigate('CollectionScreen', { handle });
     };
 
     return (
@@ -75,11 +70,11 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '100%',
-        // marginBottom: 10,
     },
     image: {
         width: '100%',
         height: 120,
+        borderRadius: 8,
     },
     overlay: {
         position: 'absolute',
