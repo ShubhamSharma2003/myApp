@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { fetchProducts } from '../../api/shopifyApi';
@@ -13,18 +13,19 @@ const FilterScreen = ({ navigation, route }) => {
     const [sortBy, setSortBy] = useState(route.params?.sortBy || '');
     const [tags, setTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState(route.params?.selectedTags || []);
+    const [loading, setLoading] = useState(true);
     const priceRef = useRef(priceRange);
 
     useEffect(() => {
         const getFilters = async () => {
+            setLoading(true);
             const products = await fetchProducts("smart-watches");
             if (!products) return;
-
             let variants = new Set();
             let prices = [];
             let uniqueTags = new Set();
 
-            products.forEach(product => {
+            products?.products.forEach(product => {
                 product.variants.forEach(variant => {
                     variants.add(variant.title);
                     if (variant.price) prices.push(parseFloat(variant.price));
@@ -45,6 +46,7 @@ const FilterScreen = ({ navigation, route }) => {
 
             setVariantTitles([...variants]);
             setTags([...uniqueTags]);
+            setLoading(false);
         };
 
         getFilters();
@@ -79,7 +81,12 @@ const FilterScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Scrollable Filters */}
+                {loading ? (
+                    <View style={styles.loaderContainer}>
+                        <ActivityIndicator size="large" color="black" />
+                    </View>
+                ) : (
+
                 <ScrollView style={styles.scrollContainer}>
                     {/* Sort By Feature */}
                     <Text style={styles.sortHeading}>Sort By</Text>
@@ -152,6 +159,7 @@ const FilterScreen = ({ navigation, route }) => {
                     </View>
 
                 </ScrollView>
+                )}
 
                 {/* Sticky Apply Filters Button */}
                 <View style={styles.stickyButtonContainer}>
@@ -220,6 +228,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     applyButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
+    loaderContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
 
 export default FilterScreen;
