@@ -33,7 +33,7 @@ const SkeletonLoader = () => {
     );
 };
 
-const CollectionScreen = () => {
+const CollectionScreen = ({ handle }) => {
     const [products, setProducts] = useState([]);
     const [collectionData, setCollectionData] = useState({});
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -47,7 +47,7 @@ const CollectionScreen = () => {
     const selectedTags = route.params?.selectedTags || []; // Tag filter
     const priceRange = route.params?.priceRange || null; // Price filter
     const sortBy = route.params?.sortBy || "";
-    console.log(collectionData, "collectionDataa");
+
     useEffect(() => {
         const loadProducts = async () => {
             const data = await fetchProducts("smart-watches");

@@ -1,29 +1,41 @@
 import React from "react";
-import { View, ScrollView, SafeAreaView, Text, Dimensions } from 'react-native';
+import { View, ScrollView, SafeAreaView, StyleSheet } from "react-native";
 import Header from "../components/universal/header";
-import CategoryNav from "../components/universal/CategoryNav";
-import ProductCarousel from "../components/universal/ProductCarousel";
-import ProductMini from "../components/universal/productmini";
-import { LinearGradient } from 'expo-linear-gradient';
-import styles from '../../styles/mainStyle';
+import SearchBar from "../components/universal/SearchBar";
+import CategoryBanner from "../components/ShopComponents/CategoryBanner";
+import CategoryList from "../components/ShopComponents/CategoryList";
+import PromoTiles from "../components/ShopComponents/PromoTiles";
+import ShopProductTiles from "../components/ShopComponents/ShopProductTile";
 
-const { width } = Dimensions.get("window"); 
-const cardWidth = (width / 2) - 20; 
-
-
-
-
-export default function Shop() {
+export default function CategoryScreen() {
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1 }} nestedScrollEnabled={true}>
+            {/* Sticky Header + Search Bar */}
+            <View style={styles.stickyHeader}>
                 <Header />
+                <SearchBar />
+            </View>
 
+            {/* Scrollable Content */}
+            <ScrollView style={styles.scrollView} nestedScrollEnabled={true}>
+                <CategoryBanner />
+                <CategoryList />
+                <PromoTiles />
+                <ShopProductTiles categoryHandle="smart-watches"/>
+                <ShopProductTiles categoryHandle="anc-earbuds"/>
+                <ShopProductTiles categoryHandle="accessories"/>
             </ScrollView>
         </SafeAreaView>
     );
 }
 
-const categoryStyles = {
-   
-};
+const styles = StyleSheet.create({
+    stickyHeader: {
+        backgroundColor: "#FFF",
+        zIndex: 1000,
+    },
+    scrollView: {
+        flex: 1,
+    },
+});
+
