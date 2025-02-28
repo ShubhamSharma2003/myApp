@@ -49,7 +49,7 @@ export default function Home() {
 
 const styles = StyleSheet.create({
     safeArea: {
-        // flex: 1,
+        flex: 1,
         backgroundColor: '#fff',
     },
 

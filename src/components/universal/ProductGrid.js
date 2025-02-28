@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     image: {
+        marginTop: 5,
         width: 100,
         height: 100,
         alignSelf: 'center',

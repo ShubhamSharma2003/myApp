@@ -8,7 +8,7 @@ const ProductHeader = ({ handle, style }) => {
     const navigation = useNavigation();
 
     const handleBackPress = () => {
-        navigation.navigate("Home");
+        navigation.goBack();
     };
 
     return (
