@@ -108,7 +108,7 @@ export const fetchProducts = async (handle) => {
   `;
 
   try {
-    console.log(`Fetching products for handle: ${handle}`);
+    console.log(`Fetching products for handle from collection: ${handle}`);
 
     const variables = { handle };
     const response = await shopifyFetch({ query, variables });
@@ -220,7 +220,6 @@ export const addToCart = async (variantId, quantity = 1) => {
   `;
 
   const response = await shopifyFetch({ query });
-  console.log("Resonsesssss", response)
   return response.data?.cartLinesAdd?.cart || null;
 };
 
@@ -288,7 +287,7 @@ const getCartId = async () => {
 
 export const removeFromCart = async (cartId, lineId) => {
   try {
-    const response = await fetch('https://mansinoise.myshopify.com/api/2024-01/graphql.json', {
+    const response = await fetch('https://mansinoise.myshopify.com/api/2025-01/graphql.json', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -350,6 +349,164 @@ export const removeFromCart = async (cartId, lineId) => {
     throw error;
   }
 };
+
+export const searchProducts = async (query) => {
+  const gqlQuery = `
+    query {
+      products(query: "${query}", first: 50) {
+        edges {
+          node {
+            id
+            title
+            handle
+            descriptionHtml
+            featuredImage {
+              url
+              altText
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await shopifyFetch({ query: gqlQuery });
+
+    return response?.data?.products?.edges.map(({ node }) => ({
+      id: node.id,
+      title: node.title,
+      handle: node.handle,
+      description: node.descriptionHtml,
+      image: node.featuredImage?.url || null,
+      price: node.priceRange.minVariantPrice.amount,
+      currency: node.priceRange.minVariantPrice.currencyCode,
+    })) || [];
+  } catch (error) {
+    console.error("❌ Error fetching search results:", error);
+    return [];
+  }
+};
+
+export const fetchProductByHandle = async (handle) => {
+  const query = `
+    query getProductByHandle($handle: String!) {
+      productByHandle(handle: $handle) {
+        id
+        title
+        descriptionHtml
+        handle
+        featuredImage {
+          url
+          altText
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        variants(first: 20) {
+          edges {
+            node {
+              id
+              title
+              sku
+              price {
+                amount
+                currencyCode
+              }
+              availableForSale
+              selectedOptions {
+                name
+                value
+              }
+              image {
+                url
+                altText
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+        metafield(namespace: "product_details", key: "product_title") {
+          key
+          value
+        }
+        media(first: 100) {
+          nodes {
+            previewImage {
+              altText
+              url
+            }
+          }
+        }
+        tags
+      }
+    }
+  `;
+
+  try {
+    console.log(`Fetching product for handle: ${handle}`);
+    
+    const variables = { handle };
+    const response = await shopifyFetch({ query, variables });
+
+    // Extract product data from response
+    const product = response?.data?.productByHandle;
+
+    if (!product) return null;
+
+    return {
+      id: product.id,
+      title: product.title,
+      descriptionHtml: product.descriptionHtml,
+      handle: product.handle,
+      featuredImage: product.featuredImage,
+      priceRange: product.priceRange,
+      variants: product.variants.edges.map(({ node: variant }) => ({
+        id: variant.id,
+        title: variant.title,
+        sku: variant.sku,
+        price: variant.price.amount,
+        compareAtPrice: variant.compareAtPrice?.amount || null,
+        currency: variant.price.currencyCode,
+        availableForSale: variant.availableForSale,
+        selectedOptions: variant.selectedOptions.reduce((acc, option) => {
+          acc[option.name] = option.value;
+          return acc;
+        }, {}),
+        image: variant.image?.url || null,
+      })),
+      media: product.media?.nodes.map(media => ({
+        url: media.previewImage?.url || null,
+        altText: media.previewImage?.altText || null,
+      })) || [],
+      metafield: product.metafield ? { key: product.metafield.key, value: product.metafield.value } : null,
+      uspTags: product.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
+      filterTags: product.tags.filter(tag =>
+        ["bestsellers-gadgets", "female health monitor"].includes(tag.toLowerCase())
+      ),
+    };
+  } catch (error) {
+    console.error("❌ Error fetching product:", error);
+    return null;
+  }
+};
+
 
 
 

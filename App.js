@@ -13,6 +13,7 @@ import CategoryScreen from './src/screens/CategoryScreen.js';
 import Premium from './src/screens/Premium.js';
 import Profile from './src/screens/profile.js';
 import ProductPage from './src/components/product/ProductPage.js';
+import SearchScreen from './src/screens/SearchScreen.js';
 import CartScreen from './src/screens/CartScreen.js';
 import NoiseLogo from './assets/icons/noise3.svg';
 import NoiseLogo2 from './assets/icons/noiseGrey.svg';
@@ -131,6 +132,7 @@ const MainStack = () => {
       <Stack.Screen name="Home" component={MyTabs} />
       <Stack.Screen name="ProductPage" component={ProductPage} />
       <Stack.Screen name="CollectionScreen" component={CollectionScreen} options={{ title: 'Collection' }} />
+      <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="WebViewScreen" component={WebViewScreen} /> 
       <Stack.Screen name="FilterScreen" component={FilterScreen} />
     </Stack.Navigator>

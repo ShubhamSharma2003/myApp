@@ -4,6 +4,7 @@ import Shop from '../screens/CategoryScreen';
 import CategoryItems from '../screens/CategoryItems';
 import CartScreen from '../screens/CartScreen';
 import CollectionScreen from '../screens/CollectionScreen';
+import SearchScreen from '../screens/SearchScreen';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ export default function ShopStack() {
                     title: route.params.categoryName
                 })}
             />
+            <Stack.Screen name="SearchScreen" component={SearchScreen} />
             
 
             {/* <Stack.Screen name="CartScreen" component={CartScreen} /> */}

@@ -1,15 +1,22 @@
 import React from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SearchBar() {
+    const navigation = useNavigation();
+
     return (
-        <View style={styles.searchContainer}>
+        <Pressable onPress={() => navigation.navigate("SearchScreen")} style={styles.searchContainer}>
             <View style={styles.searchBar}>
                 <Ionicons name="search" size={20} color="gray" />
-                <TextInput placeholder="Search for products here..." style={styles.searchInput} />
+                <TextInput
+                    placeholder="Search for products here..."
+                    style={styles.searchInput}
+                    editable={false} // Prevents typing here; redirects to SearchScreen
+                />
             </View>
-        </View>
+        </Pressable>
     );
 }
 
@@ -31,4 +38,3 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-
