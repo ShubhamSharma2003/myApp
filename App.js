@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ShopStack from './src/stacks/ShopStack.js';
 import CollectionScreen from './src/screens/CollectionScreen.js';
 import Home from './src/screens/home.js';
-import CategoryScreen from './src/screens/CategoryScreen.js';
+import CategoryScreen from './src/screens/categoryScreen.js';
 import WishList from './src/screens/WishListScreen.js';
 import Profile from './src/screens/profile.js';
 import ProductPage from './src/components/product/ProductPage.js';

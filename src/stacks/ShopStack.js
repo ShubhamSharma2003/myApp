@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Shop from '../screens/CategoryScreen';
+import Shop from '../screens/categoryScreen';
 import CategoryItems from '../screens/CategoryItems';
 import CartScreen from '../screens/CartScreen';
 import CollectionScreen from '../screens/CollectionScreen';
