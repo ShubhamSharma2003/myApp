@@ -5,12 +5,12 @@ const { width } = Dimensions.get("window");
 
 const SuggestedProducts = () => {
     const products = [
-        { id: "1", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-1" },
-        { id: "2", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-2" },
-        { id: "3", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-3" },
-        { id: "4", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-4" },
-        { id: "5", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-4" },
-        { id: "6", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-4" },
+        { id: "1", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/image_-_2025-03-03T111840.688_1.webp?v=1740981031", link: "https://mansinoise.myshopify.com/products/product-1" },
+        { id: "2", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/image_-_2025-02-28T121046.800.png?v=1740767737", link: "https://mansinoise.myshopify.com/products/product-2" },
+        { id: "3", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_4.webp?v=1740937257", link: "https://mansinoise.myshopify.com/products/product-3" },
+        { id: "4", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_5354.png?v=1740497286", link: "https://mansinoise.myshopify.com/products/product-4" },
+        { id: "5", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_1.webp?v=1740937257", link: "https://mansinoise.myshopify.com/products/product-4" },
+        { id: "6", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_3.webp?v=1740937257", link: "https://mansinoise.myshopify.com/products/product-4" },
         { id: "7", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-4" },
         { id: "8", source: "https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371", link: "https://mansinoise.myshopify.com/products/product-4" },
 

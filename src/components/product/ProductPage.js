@@ -16,6 +16,7 @@ import ImageBanner from '../universal/ImageBanner';
 import { formatPrice, formatUspTags, calculateDiscount } from '../../utils/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addToCart, fetchProductByHandle } from '../../../api/shopifyApi';
+import Toast from 'react-native-toast-message';
 
 
 const ProductPage = () => {
@@ -77,24 +78,38 @@ const ProductPage = () => {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
-
+  
     setLoading(true);
     try {
       const cart = await addToCart(selectedVariant.id, 1);
       if (cart) {
         navigation.navigate('Home', { screen: 'Cart' });
+        Toast.show({
+          type: 'success',
+          text1: 'Item added to cart!',
+          visibilityTime: 1500,
+          autoHide: true,
+          position: 'top',
+        });
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to add item!',
+        visibilityTime: 1500,
+        autoHide: true,
+        position: 'top',
+      });
     } finally {
       setLoading(false);
     }
   };
 
 
-  if (loading) {
-    return <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />;
-  }
+  // if (loading) {
+  //   return <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />;
+  // }
 
   if (error) {
     return <Text style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>{error}</Text>;
@@ -110,6 +125,7 @@ const ProductPage = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView nestedScrollEnabled stickyHeaderIndices={[0, 2]}>
+     
         <ProductHeader />
         <View style={styles.imageContainer}>
           <VerticalImageSlider images={selectedVariantMedia} selectedVariant={selectedVariant?.title} />
@@ -147,12 +163,13 @@ const ProductPage = () => {
             </View>
           </View>
         </View>
-
+        <Toast /> 
         <TouchableOpacity
           style={styles.addToBagButton}
           onPress={handleAddToCart}
           disabled={loading}
         >
+          
           {loading ? (
             <ActivityIndicator size="small" color="white" />
           ) : (

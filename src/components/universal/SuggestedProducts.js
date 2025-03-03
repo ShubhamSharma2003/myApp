@@ -7,12 +7,12 @@ const SuggestedProducts = () => {
     const looks = [
         {
             id: '1',
-            source: 'https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371',
+            source: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_4.webp?v=1740937257',
             link: 'https://mansinoise.myshopify.com/products/product-1',
         },
         {
             id: '2',
-            source: 'https://cdn.shopify.com/s/files/1/0997/6284/files/IMG_4739.png?v=1739028371',
+            source: 'https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_1.webp?v=1740937257',
             link: 'https://mansinoise.myshopify.com/products/product-2',
         },
         {

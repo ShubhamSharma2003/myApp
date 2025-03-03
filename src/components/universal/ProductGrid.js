@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginRight: 7,
         alignItems: 'flex-start',
+        borderWidth:1,
         
         // alignItems: 'baseline',
         // flexGrow: 1,  

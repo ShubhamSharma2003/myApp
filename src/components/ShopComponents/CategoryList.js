@@ -1,19 +1,30 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const categories = [
-    { id: 1, name: "SMART-WATCHES", icon: "watch-outline" },
-    { id: 2, name: "AUDIO GEAR", icon: "headset-outline" },
-    { id: 3, name: "POWER SERIES", icon: "flash-outline" },
-    { id: 4, name: "ACCESSORIES", icon: "extension-puzzle-outline" }
+    { id: 1, name: "SMART-WATCHES", icon: "watch-outline", handle: "smart-watches" },
+    { id: 2, name: "AUDIO GEAR", icon: "headset-outline", handle: "anc-earbuds" },
+    { id: 3, name: "POWER SERIES", icon: "flash-outline", handle: "noise-power-series-gan-chargers" },
+    { id: 4, name: "ACCESSORIES", icon: "extension-puzzle-outline", handle: "accessories" }
 ];
 
 const CategoryList = () => {
+    const navigation = useNavigation();
+
+    const handlePress = (handle) => {
+        navigation.navigate("CollectionScreen", { handle });
+    };
+
     return (
         <View style={styles.container}>
             {categories.map((category) => (
-                <TouchableOpacity key={category.id} style={styles.categoryItem}>
+                <TouchableOpacity 
+                    key={category.id} 
+                    style={styles.categoryItem} 
+                    onPress={() => handlePress(category.handle)}
+                >
                     <View style={styles.leftSection}>
                         <Ionicons name={category.icon} size={22} style={styles.icon} />
                         <Text style={styles.categoryText}>{category.name}</Text>
@@ -29,8 +40,8 @@ const styles = StyleSheet.create({
     container: {
         margin: 0,
         paddingVertical: 10,
-        backgroundColor:'#fff',
-        paddingBottom:20,
+        backgroundColor: '#fff',
+        paddingBottom: 20,
     },
     categoryItem: {
         flexDirection: "row",

@@ -110,7 +110,7 @@ const MyTabs = () => {
         }}
       />
       <Tab.Screen 
-        name="Account"
+        name="Welcome to the NM Club"
         component={Profile}
         options={{
           tabBarIcon: ({ focused }) => (

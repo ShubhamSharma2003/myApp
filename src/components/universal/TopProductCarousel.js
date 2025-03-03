@@ -1,28 +1,25 @@
 import React from "react";
-import { View, Text, Image, FlatList, StyleSheet, Dimensions } from "react-native";
-import { Video } from "expo-av"; // Import Video component from Expo
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { Video } from "expo-av";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
-// Top 5 products with image, GIF, or video URLs
+// Top 5 products with image, GIF, or video URLs + product handle for navigation
 const topProducts = [
-    { id: "1", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/pass4.png?v=1739184733" },
-    { id: "2", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/pass4.png?v=1739184733" },
-    { id: "3", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/pass4.png?v=1739184733" },
-    { id: "4", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/pass4.png?v=1739184733" },
-    { id: "5", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/pass4.png?v=1739184733" },
+    { id: "1", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_4_200x.webp?v=1740937257", handle: "noise-pure-pods-open-ear-headphones" },
+    { id: "2", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_2_200x.webp?v=1740937257", handle: "noisefit-diva-2-smartwatch" },
+    { id: "3", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_3_200x.webp?v=1740937257", handle: "noise-buds-n1-truly-wireless-earbuds" },
+    { id: "4", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_1_200x.webp?v=1740937257", handle: "noise-air-clips-ows-open-ear-headphone" },
+    { id: "5", media: "https://cdn.shopify.com/s/files/1/0997/6284/files/Carousel_4_200x.webp?v=1740937257", handle: "noise-pure-pods-open-ear-headphones" },
 ];
 
 // Function to determine media type
-const getMediaType = (url) => {
-    if (url.endsWith(".mp4") || url.endsWith(".mov") || url.endsWith(".avi")) {
-        return "video";
-    } else {
-        return "image"; // Covers images & GIFs
-    }
-};
+const getMediaType = (url) => (url.endsWith(".mp4") || url.endsWith(".mov") || url.endsWith(".avi")) ? "video" : "image";
 
 const TopProductsCarousel = () => {
+    const navigation = useNavigation();
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Top 5 Products</Text>
@@ -35,14 +32,16 @@ const TopProductsCarousel = () => {
                     const mediaType = getMediaType(item.media);
 
                     return (
-                        <View style={[
-                            styles.productContainer, 
-                            index === 0 ? styles.firstItem : null // Extra padding for the first item
-                        ]}>
-                            {/* Large Number in Background with Full Black Outline */}
-                            <Text style={ [styles.rank , index === 0 ? styles.firstItem : null]}>{index + 1}</Text>
-
-                            {/* Render Image, GIF, or Video */}
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate("ProductPage", { handle: item.handle })}
+                            activeOpacity={0.8}
+                            style={[
+                                styles.productContainer,
+                                index === 0 ? styles.firstItem : null
+                            ]}
+                        >
+                            <Text style={[styles.rank, index === 0 ? styles.firstItem : null]}>{index + 1}</Text>
+                            
                             {mediaType === "image" ? (
                                 <Image source={{ uri: item.media }} style={styles.productMedia} />
                             ) : (
@@ -55,7 +54,7 @@ const TopProductsCarousel = () => {
                                     shouldPlay
                                 />
                             )}
-                        </View>
+                        </TouchableOpacity>
                     );
                 }}
             />
@@ -78,26 +77,23 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginRight: 20,
-        paddingLeft: 30, // Default padding for all items
+        paddingLeft: 30,
         position: "relative",
-        paddingBottom:15,
+        paddingBottom: 15,
     },
     firstItem: {
-        marginLeft: 8, // Increased left padding for the first item
+        marginLeft: 8,
     },
     rank: {
         position: "absolute",
-        marginLeft: 1,
         fontSize: 120,
         fontWeight: "bold",
         color: "white",
         left: -17,
-        top: "35%", // Moved slightly up
+        top: "35%",
         zIndex: -1,
-
-        // 🔥 Full black outline effect
-        textShadowColor: "rgba(0, 0, 0, 2.4)", // Darker shadow
-        textShadowOffset: { width: 0, height: 0 }, 
+        textShadowColor: "rgba(0, 0, 0, 2.4)",
+        textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 10,
     },
     productMedia: {
