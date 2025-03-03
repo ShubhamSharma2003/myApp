@@ -360,6 +360,7 @@ export const searchProducts = async (query) => {
             title
             handle
             descriptionHtml
+            tags
             featuredImage {
               url
               altText
@@ -370,6 +371,20 @@ export const searchProducts = async (query) => {
                 currencyCode
               }
             }
+              metafield(namespace: "product_details", key: "product_title") {
+          key
+          value
+        }
+          compareAtPriceRange {
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
           }
         }
       }
@@ -380,13 +395,16 @@ export const searchProducts = async (query) => {
     const response = await shopifyFetch({ query: gqlQuery });
 
     return response?.data?.products?.edges.map(({ node }) => ({
-      id: node.id,
-      title: node.title,
-      handle: node.handle,
-      description: node.descriptionHtml,
-      image: node.featuredImage?.url || null,
-      price: node.priceRange.minVariantPrice.amount,
-      currency: node.priceRange.minVariantPrice.currencyCode,
+      id: node?.id,
+      title: node?.title,
+      handle: node?.handle,
+      tags: node?.tags,
+      description: node?.descriptionHtml,
+      image: node?.featuredImage?.url || null,
+      price: node?.priceRange?.minVariantPrice?.amount,
+      maxPrice: node?.compareAtPriceRange?.maxVariantPrice?.amount,
+      currency: node?.priceRange?.minVariantPrice?.currencyCode,
+      metafield: node?.metafield ? { key: node?.metafield?.key, value: node?.metafield?.value } : null,
     })) || [];
   } catch (error) {
     console.error("❌ Error fetching search results:", error);
@@ -471,33 +489,33 @@ export const fetchProductByHandle = async (handle) => {
     if (!product) return null;
 
     return {
-      id: product.id,
-      title: product.title,
-      descriptionHtml: product.descriptionHtml,
-      handle: product.handle,
-      featuredImage: product.featuredImage,
-      priceRange: product.priceRange,
-      variants: product.variants.edges.map(({ node: variant }) => ({
-        id: variant.id,
-        title: variant.title,
-        sku: variant.sku,
-        price: variant.price.amount,
-        compareAtPrice: variant.compareAtPrice?.amount || null,
-        currency: variant.price.currencyCode,
-        availableForSale: variant.availableForSale,
-        selectedOptions: variant.selectedOptions.reduce((acc, option) => {
+      id: product?.id,
+      title: product?.title,
+      descriptionHtml: product?.descriptionHtml,
+      handle: product?.handle,
+      featuredImage: product?.featuredImage,
+      priceRange: product?.priceRange,
+      variants: product?.variants?.edges.map(({ node: variant }) => ({
+        id: variant?.id,
+        title: variant?.title,
+        sku: variant?.sku,
+        price: variant?.price?.amount,
+        compareAtPrice: variant?.compareAtPrice?.amount || null,
+        currency: variant.price?.currencyCode,
+        availableForSale: variant?.availableForSale,
+        selectedOptions: variant?.selectedOptions.reduce((acc, option) => {
           acc[option.name] = option.value;
           return acc;
         }, {}),
-        image: variant.image?.url || null,
+        image: variant?.image?.url || null,
       })),
-      media: product.media?.nodes.map(media => ({
-        url: media.previewImage?.url || null,
-        altText: media.previewImage?.altText || null,
+      media: product?.media?.nodes.map(media => ({
+        url: media?.previewImage?.url || null,
+        altText: media?.previewImage?.altText || null,
       })) || [],
-      metafield: product.metafield ? { key: product.metafield.key, value: product.metafield.value } : null,
-      uspTags: product.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
-      filterTags: product.tags.filter(tag =>
+      metafield: product?.metafield ? { key: product?.metafield?.key, value: product?.metafield?.value } : null,
+      uspTags: product?.tags.filter(tag => tag.toLowerCase().startsWith("usp")),
+      filterTags: product?.tags.filter(tag =>
         ["bestsellers-gadgets", "female health monitor"].includes(tag.toLowerCase())
       ),
     };

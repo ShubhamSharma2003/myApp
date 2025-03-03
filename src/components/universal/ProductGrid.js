@@ -69,10 +69,10 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                     ) : (
                         products?.products.map((item) => {
                             const imageUrl = item.featuredImage ? item.featuredImage.url : 'https://via.placeholder.com/150';
-                            const title = item.metafield?.value || item.title;
-                            const price = item.priceRange?.minVariantPrice?.amount;
+                            const title = item?.metafield?.value || item?.title;
+                            const price = item?.priceRange?.minVariantPrice?.amount;
 
-                            const formattedUspTags = formatUspTags(item.uspTags);
+                            const formattedUspTags = formatUspTags(item?.uspTags);
 
                             return (
                               <TouchableOpacity
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginRight: 7,
         alignItems: 'flex-start',
-        borderWidth: 1,
+        
         // alignItems: 'baseline',
         // flexGrow: 1,  
         // height: 220,

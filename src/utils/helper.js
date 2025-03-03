@@ -14,18 +14,16 @@ export const calculateDiscount = (minPrice, maxPrice) => {
 };
 
 export const formatUspTags = (uspTags) => {
-  if (!Array.isArray(uspTags)) return "";
+  if (!Array.isArray(uspTags)) return "Shop Now";
 
-  // Match usp1_, usp_1_, usp2_, usp_2_
+  // Match "USP_", "usp1_", "usp_1_", "usp2_", "usp_2_", "usp_"
   const filteredTags = uspTags
-    .filter(tag => /^usp[_]?1[_]?|^usp[_]?2[_]?/i.test(tag)) // Match usp1_, usp_1_, usp2_, usp_2_
-    .map(tag => tag.replace(/^usp[_]?1[_]?|^usp[_]?[_]?/i, "")) // Remove only the prefix, keeping numbers
+    .filter(tag => /^(USP_|usp1_|usp_1_|usp2_|usp_2_|usp_)/i.test(tag)) // Match all variations
+    .map(tag => tag.replace(/^(USP_|usp1_|usp_1_|usp2_|usp_2_|usp_)/i, "")); // Remove only the prefix
 
   // Limit to max 2 tags and join with " | "
-  return filteredTags.slice(0, 2).join(" | "); 
+  return filteredTags.slice(0, 2).join(" | ");
 };
-
-
 
 
 

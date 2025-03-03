@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Text, FlatList, Pressable, StyleSheet, Image, Keyboard } from "react-native";
+import { 
+    View, TextInput, Text, FlatList, Pressable, 
+    StyleSheet, Image, Keyboard, ActivityIndicator 
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { searchProducts } from "../../api/shopifyApi"; 
+import { formatPrice, calculateDiscount, formatUspTags } from "../utils/helper";
 
 export default function SearchScreen() {
     const navigation = useNavigation();
@@ -16,7 +20,6 @@ export default function SearchScreen() {
         loadSearchHistory();
     }, []);
 
-    // Load search history from AsyncStorage
     const loadSearchHistory = async () => {
         try {
             const history = await AsyncStorage.getItem("searchHistory");
@@ -26,8 +29,6 @@ export default function SearchScreen() {
         }
     };
 
-
-    // Save search history
     const saveSearchHistory = async (searchTerm) => {
         if (!searchTerm.trim()) return;
         const updatedHistory = [searchTerm, ...searchHistory.filter(item => item !== searchTerm)].slice(0, 10);
@@ -35,16 +36,14 @@ export default function SearchScreen() {
         await AsyncStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
     };
 
-    // Clear search history
     const clearHistory = async () => {
         await AsyncStorage.removeItem("searchHistory");
         setSearchHistory([]);
     };
 
-    // Handle search submission
     const handleSearch = async () => {
         if (!searchText.trim()) return;
-        Keyboard.dismiss(); // Hide keyboard
+        Keyboard.dismiss();
         setIsLoading(true);
         
         saveSearchHistory(searchText);
@@ -56,7 +55,7 @@ export default function SearchScreen() {
 
     return (
         <View style={styles.container}>
-            {/* Search Bar with Back Button */}
+            {/* Search Bar */}
             <View style={styles.searchBar}>
                 <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="black" />
@@ -66,27 +65,36 @@ export default function SearchScreen() {
                     placeholder="Search for products..."
                     value={searchText}
                     onChangeText={setSearchText}
-                    onSubmitEditing={handleSearch} // Search on enter
+                    onSubmitEditing={handleSearch}
                     autoFocus
                 />
             </View>
 
-            {/* Search Results */}
+            {/* Loading Indicator */}
             {isLoading ? (
-                <Text style={styles.loadingText}>Searching...</Text>
+                <ActivityIndicator size="large" color="#000" style={{ marginTop: 20 }} />
             ) : searchResults.length > 0 ? (
                 <FlatList
                     data={searchResults}
+                    key={"2-columns"} 
+                    numColumns={2} 
+                    contentContainerStyle={styles.productList}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <Pressable
                             onPress={() => navigation.navigate("ProductPage", { handle: item.handle })}
-                            style={styles.resultItem}
+                            style={styles.productCard}
                         >
-                            <Image source={{ uri: item.image }} style={styles.resultImage} />
-                            <View>
-                                <Text style={styles.resultTitle}>{item.title}</Text>
-                                <Text style={styles.resultPrice}>{item.currency} {item.price}</Text>
+                            <Image source={{ uri: item?.image }} style={styles.productImage} />
+                            <Text style={styles.productTitle} numberOfLines={2} ellipsizeMode="tail">
+                                {item?.metafield?.value}
+                            </Text>
+
+                            <Text style={styles.description}>{formatUspTags(item?.tags || "Shop Now")}</Text>
+                            <View style={styles.priceRow}>
+                                <Text style={styles.salePrice}>{formatPrice(item?.price || '₹0')}</Text>
+                                <Text style={styles.originalPrice}>{formatPrice(item?.maxPrice || '₹0')}</Text>
+                                <Text style={styles.discountText}>{calculateDiscount(item?.price, item?.maxPrice) || '0% OFF'}</Text>
                             </View>
                         </Pressable>
                     )}
@@ -123,7 +131,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#f9f9f9",
     },
     searchBar: {
         flexDirection: "row",
@@ -140,35 +148,61 @@ const styles = StyleSheet.create({
         fontSize: 16,
         padding: 10,
     },
-    loadingText: {
-        textAlign: "center",
-        marginTop: 20,
+    productList: {
+        paddingHorizontal: 10,
+        paddingTop: 10,
+    },
+    productCard: {
+        flex: 1,
+        backgroundColor: "#fff",
+        padding: 10,
+        margin: 5,
+        alignItems: "flex-start",
+        borderWidth:1,
+        borderColor:'#eee',
+    },
+    productImage: {
+        width: 150,
+        height: 150,
+        resizeMode: "cover",
+    },
+    productTitle: {
+        fontSize: 14,
+        fontWeight: "bold",
+        marginTop: 5,
+    },
+    priceRow: {
+        flexDirection: 'row',
+        alignItems: 'baseline',
+        gap: 6,
+        maxWidth: '100%',
+    },
+    originalPrice: {
+        textDecorationLine: 'line-through',
+        color: '#777',
+        fontSize: 11,
+    },
+    salePrice: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000000',
+
+    },
+    discountText:{
+        fontSize: 10,
+        color: '#27ae60',
+        fontWeight: 'bold',
+        marginTop: 5,
+    },
+    description: {
+        fontSize: 11,
+        color: '#777',
+        textAlign: 'left',
     },
     noResults: {
         textAlign: "center",
         marginTop: 20,
         color: "gray",
-    },
-    resultItem: {
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: "#eee",
-    },
-    resultImage: {
-        width: 50,
-        height: 50,
-        marginRight: 10,
-        borderRadius: 5,
-    },
-    resultTitle: {
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    resultPrice: {
-        fontSize: 14,
-        color: "#888",
     },
     historyContainer: {
         padding: 20,
@@ -185,7 +219,7 @@ const styles = StyleSheet.create({
     },
     clearButton: {
         fontSize: 14,
-        color: "red",
+        color: "grey",
     },
     historyItem: {
         flexDirection: "row",

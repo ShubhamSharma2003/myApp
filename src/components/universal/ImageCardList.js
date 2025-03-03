@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: 120,
-        borderRadius: 8,
     },
     overlay: {
         position: 'absolute',
@@ -83,7 +82,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         paddingHorizontal: 10,
         paddingVertical: 5,
-        borderRadius: 5,
     },
     label: {
         fontSize: 14,
