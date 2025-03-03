@@ -83,7 +83,24 @@ export default function WishlistScreen() {
         <View style={styles.safeArea}>
             <Header />
             {wishlist.length === 0 ? (
-                <Text style={styles.emptyText}>Your Wishlist is Empty</Text>
+                <View style={styles.emptyContainer}>
+                    {/* Empty Wishlist Image */}
+                    <Image 
+                        source={{ uri: "https://cdn.shopify.com/s/files/1/0997/6284/files/cart_illustration.png" }} // ✅ Add your image here
+                        style={styles.emptyImage}
+                    />
+
+                    {/* Empty Wishlist Text */}
+                    <Text style={styles.emptyText}>Your Wishlist is Empty</Text>
+                    
+                    {/* Explore More Button */}
+                    <TouchableOpacity 
+                        style={styles.exploreButton} 
+                        onPress={() => navigation.navigate("Shop")}
+                    >
+                        <Text style={styles.exploreButtonText}>EXPLORE MORE</Text>
+                    </TouchableOpacity>
+                </View>
             ) : (
                 <FlatList 
                     data={wishlist}
@@ -167,6 +184,34 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginTop: 50,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 20,
+    },
+    emptyImage: {
+        width: 200, // Adjust size as needed
+        height: 200, // Adjust size as needed
+        resizeMode: "contain",
+        marginBottom: 20,
+    },
+    emptyText: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 20,
+    },
+    exploreButton: {
+        backgroundColor: "#000", // Change to your theme color
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+    },
+    exploreButtonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 

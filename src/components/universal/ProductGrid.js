@@ -10,6 +10,7 @@ import { formatPrice, calculateDiscount,formatUspTags } from '../../utils/helper
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message"; 
 import HeartIconFilled from "../../../assets/icons/heartIconFilled";
+import { loadWishlist, toggleWishlist } from "../../utils/wishlistHelper";
 
 
 const { width } = Dimensions.get('window');
@@ -22,55 +23,12 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
     // const formattedUspTags = formatUspTags(item.uspTags);
 
     useEffect(() => {
-        loadWishlist();
+        const fetchWishlist = async () => {
+            const storedWishlist = await loadWishlist();
+            setWishlist(storedWishlist);
+        };
+        fetchWishlist();
     }, []);
-
-    const loadWishlist = async () => {
-        try {
-            const storedWishlist = await AsyncStorage.getItem("wishlist");
-            setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
-        } catch (error) {
-            console.error("Error loading wishlist:", error);
-        }
-    };
-    
-
-    const toggleWishlist = async (product, showToast = true) => {
-        try {
-            const storedWishlist = await AsyncStorage.getItem("wishlist");
-            let wishlistArray = storedWishlist ? JSON.parse(storedWishlist) : [];
-            
-            const index = wishlistArray.findIndex((item) => item.id === product.id);
-            
-            if (index === -1) {
-                wishlistArray.push(product);
-                if (showToast) {
-                    Toast.show({
-                        type: "success",
-                        text1: "Added to Wishlist",
-                        text2: product.title + " has been added!",
-                    });
-                }
-            } else {
-                wishlistArray = wishlistArray.filter((item) => item.id !== product.id);
-                if (showToast) {
-                    Toast.show({
-                        type: "info",
-                        text1: "Removed from Wishlist",
-                        text2: product.title + " has been removed!",
-                    });
-                }
-            }
-    
-            await AsyncStorage.setItem("wishlist", JSON.stringify(wishlistArray));
-            
-            // ✅ Ensure UI updates immediately
-            setWishlist([...wishlistArray]); 
-        } catch (error) {
-            console.error("Error updating wishlist:", error);
-        }
-    };
-    
     
     
     
@@ -143,13 +101,13 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                                   })
                                 }
                               >
-                                <TouchableOpacity style={styles.heartIcon} onPress={() => toggleWishlist(item)}>
-                                    {isWishlisted ? (
+                                <TouchableOpacity style={styles.heartIcon} onPress={() => toggleWishlist(item, wishlist, setWishlist)}>
+                                    {wishlist.some((w) => w.id === item.id) ? (
                                         <HeartIconFilled width={18} height={18} />
                                     ) : (
                                         <HeartIcon width={18} height={18} />
                                     )}
-                                </TouchableOpacity>
+                                </TouchableOpacity>;
 
                                 <Image
                                   source={{ uri: imageUrl }}
