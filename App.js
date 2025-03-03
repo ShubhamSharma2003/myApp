@@ -10,7 +10,7 @@ import ShopStack from './src/stacks/ShopStack.js';
 import CollectionScreen from './src/screens/CollectionScreen.js';
 import Home from './src/screens/home.js';
 import CategoryScreen from './src/screens/CategoryScreen.js';
-import Premium from './src/screens/Premium.js';
+import WishList from './src/screens/WishListScreen.js';
 import Profile from './src/screens/profile.js';
 import ProductPage from './src/components/product/ProductPage.js';
 import SearchScreen from './src/screens/SearchScreen.js';
@@ -26,6 +26,7 @@ import { createCart } from './api/shopifyApi.js';
 import { CartProvider } from './src/components/universal/CartContext.js';
 import CartInitializer from './src/components/universal/CartInitializer.js'; 
 import FilterScreen from './src/screens/FilterScreen.js';
+import Toast from "react-native-toast-message";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -84,8 +85,8 @@ const MyTabs = () => {
         }}
       />
       <Tab.Screen 
-        name="Premium" 
-        component={Premium}
+        name="WishList" 
+        component={WishList}
         options={{
           tabBarIcon: ({ focused }) => (
             <AnimatedTabIcon 
@@ -182,6 +183,7 @@ export default function App() {
     <CartInitializer />
       <MainStack />
     </NavigationContainer>
+    <Toast/>
     </CartProvider>
   );
 }

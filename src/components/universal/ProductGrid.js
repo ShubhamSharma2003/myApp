@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ImageBackground, ActivityIndicator } from 'react-native';
 import { Video } from 'expo-av';
 import ContentLoader, { Rect } from 'react-content-loader/native';
@@ -7,17 +7,73 @@ import HeartIcon from "../../../assets/icons/heartIcon.svg";
 import { useNavigation } from '@react-navigation/native';
 import { fetchProducts } from '../../../api/shopifyApi'; 
 import { formatPrice, calculateDiscount,formatUspTags } from '../../utils/helper'; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message"; 
+import HeartIconFilled from "../../../assets/icons/heartIconFilled";
 
 
 const { width } = Dimensions.get('window');
 
 const ProductGrid = ({ backgroundType = 'video' }) => {
     const navigation = useNavigation(); 
-
+    const [wishlist, setWishlist] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     // const formattedUspTags = formatUspTags(item.uspTags);
 
+    useEffect(() => {
+        loadWishlist();
+    }, []);
+
+    const loadWishlist = async () => {
+        try {
+            const storedWishlist = await AsyncStorage.getItem("wishlist");
+            setWishlist(storedWishlist ? JSON.parse(storedWishlist) : []);
+        } catch (error) {
+            console.error("Error loading wishlist:", error);
+        }
+    };
+    
+
+    const toggleWishlist = async (product, showToast = true) => {
+        try {
+            const storedWishlist = await AsyncStorage.getItem("wishlist");
+            let wishlistArray = storedWishlist ? JSON.parse(storedWishlist) : [];
+            
+            const index = wishlistArray.findIndex((item) => item.id === product.id);
+            
+            if (index === -1) {
+                wishlistArray.push(product);
+                if (showToast) {
+                    Toast.show({
+                        type: "success",
+                        text1: "Added to Wishlist",
+                        text2: product.title + " has been added!",
+                    });
+                }
+            } else {
+                wishlistArray = wishlistArray.filter((item) => item.id !== product.id);
+                if (showToast) {
+                    Toast.show({
+                        type: "info",
+                        text1: "Removed from Wishlist",
+                        text2: product.title + " has been removed!",
+                    });
+                }
+            }
+    
+            await AsyncStorage.setItem("wishlist", JSON.stringify(wishlistArray));
+            
+            // ✅ Ensure UI updates immediately
+            setWishlist([...wishlistArray]); 
+        } catch (error) {
+            console.error("Error updating wishlist:", error);
+        }
+    };
+    
+    
+    
+    
     useEffect(() => {
         const loadProducts = async () => {
             try {
@@ -33,6 +89,8 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
 
         loadProducts();
     }, []);
+
+
 
     return (
         <View style={styles.container}>
@@ -71,6 +129,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                             const imageUrl = item.featuredImage ? item.featuredImage.url : 'https://via.placeholder.com/150';
                             const title = item?.metafield?.value || item?.title;
                             const price = item?.priceRange?.minVariantPrice?.amount;
+                            const isWishlisted = wishlist.some((w) => w.id === item.id);
 
                             const formattedUspTags = formatUspTags(item?.uspTags);
 
@@ -84,8 +143,12 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                                   })
                                 }
                               >
-                                <TouchableOpacity style={styles.heartIcon}>
-                                  <HeartIcon width={18} height={18} />
+                                <TouchableOpacity style={styles.heartIcon} onPress={() => toggleWishlist(item)}>
+                                    {isWishlisted ? (
+                                        <HeartIconFilled width={18} height={18} />
+                                    ) : (
+                                        <HeartIcon width={18} height={18} />
+                                    )}
                                 </TouchableOpacity>
 
                                 <Image
