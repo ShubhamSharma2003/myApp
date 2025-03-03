@@ -1,145 +1,160 @@
+// ProductPage.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from '@expo/vector-icons/Ionicons'; 
 import Feather from '@expo/vector-icons/Feather';
 import ProductTilePlain from '../../components/universal/ProductTilePlain';
 import ProductHeader from './ProductHeader';
 import CardStackCarousal from '../universal/CardStackCarousal';
 import VerticalImageSlider from '../../components/universal/VerticalScroll';
 import ProductRating from './ProductRating';
-import ProductTileLarge from '../../components/universal/ProductTileLarge';
 import VideoBanner from '../universal/VideoBanner';
 import ImageBanner from '../universal/ImageBanner';
-import {formatPrice,formatUspTags, calculateDiscount } from '../../utils/helper'; 
+import { formatPrice, formatUspTags, calculateDiscount } from '../../utils/helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addToCart } from '../../../api/shopifyApi';
-import { useNavigation } from '@react-navigation/native';
-import CartScreen from '../../screens/CartScreen';
-import { ActivityIndicator } from 'react-native';
+import { addToCart, fetchProductByHandle } from '../../../api/shopifyApi';
 
 
 const ProductPage = () => {
   const route = useRoute();
-  const product = route.params?.product || {};
   const navigation = useNavigation();
 
-
-  
-  const [selectedImages, setSelectedImages] = useState(product.images || []);
-  const [selectedPrice, setSelectedPrice] = useState(product.variants?.[0]?.price);
-  const [selectedVariantId, setSelectedVariantId] = useState(product.variants?.[0]?.id);
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedVariantMedia, setSelectedVariantMedia] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-useEffect(() => {
-  let mediaImages = product.media.filter((media,index) =>{
-    if(media.altText == selectedVariant.title){
-      // console.log("media",media.url);
-      return media.url;
-    }
-  })
-  setSelectedVariantMedia(mediaImages);
-}, []);
-  
- const formattedUspTags = formatUspTags(product.uspTags);
-  const handleVariantSelect = (variant) => {
-  setSelectedVariant(variant);
-  let mediaImages = product.media.filter((media,index) =>{
-    if(media.altText === variant.title){
-      return media.url;
-    }
-  })
-  setSelectedVariantMedia(mediaImages);
-  setSelectedPrice(variant.price);
-};
+  useEffect(() => {
+    const initialProduct = route.params?.product;
+    const handle = route.params?.handle;
 
-const checkCartId = async () => {
-  try {
-    const cartId = await AsyncStorage.getItem('cartId');
-    if (cartId !== null) {
-      console.log('Cart ID exists:', cartId);
+    if (initialProduct && initialProduct.variants && initialProduct.media) {
+      setProduct(initialProduct);
+      setSelectedVariant(initialProduct.variants[0]);
+      setLoading(false);
+    } else if (handle) {
+      fetchFullProduct(handle);
     } else {
-      console.log('No Cart ID found, creating a new one...');
-      // Here you can create a new cart if needed
+      console.error("❌ Invalid product data or handle:", route.params);
+      setError("Product not found.");
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error retrieving cartId:', error);
-  }
-};
+  }, [route.params]);
 
-// Call this function inside useEffect or any event handler
-useEffect(() => {
-  checkCartId();
-}, []);
-
-console.log("Selected variant", selectedVariant);
-const handleAddToCart = async () => {
-  setLoading(true); // Start loading
-  try {
-    const cart = await addToCart(selectedVariant.id, 1);
-    if (cart) {
-      console.log("Cart Updated:", cart);
-      navigation.navigate('Home', { screen: 'Cart' }); // Navigate to the Home (tab navigator) and activate the Cart tab
+  useEffect(() => {
+    if (product && selectedVariant) {
+      const mediaImages = product.media?.filter(media => media.altText === selectedVariant.title);
+      setSelectedVariantMedia(mediaImages || []);
     }
-  } catch (error) {
-    console.error("Error adding to cart:", error);
-  } finally {
-    setLoading(false); // Stop loading after request completion
-  }
-};
+  }, [product, selectedVariant]);
 
-  
+  //using for Search Functionality  to fetch product by handle
+  const fetchFullProduct = async (handle) => {
+    try {
+      const fullProduct = await fetchProductByHandle(handle);
+      if (fullProduct) {
+        setProduct(fullProduct);
+        setSelectedVariant(fullProduct.variants[0]);
+      } else {
+        console.error("Product not found for handle:", handle);
+        setError("Product not found.");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setError("Failed to load product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVariantSelect = (variant) => {
+    setSelectedVariant(variant);
+  };
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant) return;
+
+    setLoading(true);
+    try {
+      const cart = await addToCart(selectedVariant.id, 1);
+      if (cart) {
+        navigation.navigate('Home', { screen: 'Cart' });
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  if (loading) {
+    return <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />;
+  }
+
+  if (error) {
+    return <Text style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>{error}</Text>;
+  }
+
+  if (!product) {
+    return <Text style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>Product not found.</Text>;
+  }
+
+  const formattedUspTags = formatUspTags(product?.uspTags || []);
+
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView nestedScrollEnabled={true} style={{ flex: 1 }} stickyHeaderIndices={[0, 2]}>
+      <ScrollView nestedScrollEnabled stickyHeaderIndices={[0, 2]}>
         <ProductHeader />
-          <View style={styles.imageContainer}>
-          <VerticalImageSlider images={ selectedVariantMedia } selectedVariant={selectedVariant.title} />
+        <View style={styles.imageContainer}>
+          <VerticalImageSlider images={selectedVariantMedia} selectedVariant={selectedVariant?.title} />
+        </View>
 
-          </View>
-        
         <View style={styles.stickyHeader}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.variantScroll}>
             {product?.variants?.map((variant) => (
               <TouchableOpacity
-               key={variant.id}
-               onPress={() => handleVariantSelect(variant)}
-               style={[styles.variantButton, selectedVariant?.id === variant.id && styles.activeVariantButton]}
+                key={variant.id}
+                onPress={() => handleVariantSelect(variant)}
+                style={[styles.variantButton, selectedVariant?.id === variant.id && styles.activeVariantButton]}
               >
-                <Image 
-                  source={{ uri: variant.image || 'https://via.placeholder.com/65' }} 
-                 style={styles.variantImage} 
-               />
-             </TouchableOpacity>
-           ))}
-           </ScrollView>
+                <Image
+                  source={{ uri: variant?.image || 'https://via.placeholder.com/65' }}
+                  style={styles.variantImage}
+                />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
 
-        
         <View style={styles.details}>
-          <Text style={styles.title}>{product?.metafield?.value || 'Product Name'} - {selectedVariant?.title}</Text>
-          <Text style={styles.description}>{formattedUspTags || product.descriptionHtml.replace(/<[^>]*>?/gm, '').substring(0, 50) + "..." || 'Product description goes here.'}</Text>
+          <Text style={styles.title}>{product?.metafield?.value || product.title || 'Product Name'} - {selectedVariant?.title}</Text>
+          <Text style={styles.description}>
+            {formattedUspTags ||
+              (product?.descriptionHtml && product.descriptionHtml.replace(/<[^>]*>?/gm, '').substring(0, 50) + "...") ||
+              'Product description goes here.'}
+          </Text>
           <View style={styles.priceContainer}>
             <View style={styles.priceRow}>
-              <Text style={styles.salePrice}> {formatPrice(selectedVariant.price || '₹0')}</Text>
+              <Text style={styles.salePrice}> {formatPrice(selectedVariant?.price || '₹0')}</Text>
               <Text style={styles.originalPrice}>{formatPrice(selectedVariant?.compareAtPrice || '0')}</Text>
-              <Text style={styles.discountText}>{calculateDiscount(selectedVariant.price, selectedVariant?.compareAtPrice) || '0% OFF'}</Text>
+              <Text style={styles.discountText}>{calculateDiscount(selectedVariant?.price, selectedVariant?.compareAtPrice) || '0% OFF'}</Text>
             </View>
           </View>
         </View>
 
-
-        <TouchableOpacity 
-          style={styles.addToBagButton} 
-          onPress={handleAddToCart} 
-          disabled={loading} // Disable button when loading
+        <TouchableOpacity
+          style={styles.addToBagButton}
+          onPress={handleAddToCart}
+          disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator size="small" color="white" /> // Show loader when loading
+            <ActivityIndicator size="small" color="white" />
           ) : (
             <>
               <Text style={styles.addToBagText}>ADD TO BAG</Text>
@@ -147,7 +162,6 @@ const handleAddToCart = async () => {
             </>
           )}
         </TouchableOpacity>
-
 
         <View style={styles.deliveryContainer}>
           <Text style={styles.deliveryText}>Check delivery date</Text>
@@ -160,7 +174,6 @@ const handleAddToCart = async () => {
           <MaterialCommunityIcons name="information-outline" size={20} color="black" />
         </View>
 
-        {/* Key Features */}
         <View style={styles.featuresContainer}>
             <Text style={styles.featuresTitle}>Key Features</Text>
             <View style={styles.featuresGrid}>
@@ -191,7 +204,6 @@ const handleAddToCart = async () => {
             </View>
         </View>
 
-        {/* Warranty and Secure Payment */}
         <View style={styles.warrantyContainer}>
             <View style={styles.warrantyItem}>
                 <MaterialCommunityIcons name="autorenew" size={22} color="black" />
@@ -212,16 +224,12 @@ const handleAddToCart = async () => {
 
         <ProductTilePlain />
 
-        <View style={{ height: '600', width:'100%' }}>
-        <CardStackCarousal />
+        <View style={{ height: '600', width: '100%' }}>
+          <CardStackCarousal />
         </View>
-
-        {/* <ProductTileLarge /> */}
-        
 
         <ProductRating />
 
-        {/* Questions & FAQ Section */}
         <View style={styles.faqContainer}>
           <Text style={styles.faqTitle}>QUESTIONS?</Text>
           <View style={styles.faqRow}>
@@ -241,12 +249,12 @@ const handleAddToCart = async () => {
             </View>
           </View>
         </View>
-       
-
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+// ... (styles)
 
 const styles = StyleSheet.create({
   imageContainer: {
