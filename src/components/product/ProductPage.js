@@ -241,9 +241,9 @@ const ProductPage = () => {
 
         <ProductTilePlain />
 
-        <View style={{ height: '600', width: '100%' }}>
+        {/* <View style={{ height: '600', width: '100%' }}>
           <CardStackCarousal />
-        </View>
+        </View> */}
 
         <ProductRating />
 

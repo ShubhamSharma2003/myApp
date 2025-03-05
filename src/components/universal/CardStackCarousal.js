@@ -10,11 +10,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import {
-  State,
-  FlingGestureHandler,
-  Directions,
-} from 'react-native-gesture-handler';
+
 
 const { width } = Dimensions.get('screen');
 const OVERFLOW_HEIGHT = 70;

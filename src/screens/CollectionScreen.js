@@ -76,6 +76,11 @@ const CollectionScreen = () => {
     }, [productHandle]);
 
     useEffect(() => {
+        console.log("Received Filters:", route.params);
+    }, [route.params]);
+    
+
+    useEffect(() => {
         let filtered = products;
     
         console.log("Initial Products:", products.length);

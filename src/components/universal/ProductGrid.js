@@ -41,9 +41,9 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
             } catch (error) {
                 console.error("Error fetching products:", error);
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
+        }
 
         loadProducts();
     }, []);
@@ -107,7 +107,7 @@ const ProductGrid = ({ backgroundType = 'video' }) => {
                                     ) : (
                                         <HeartIcon width={18} height={18} />
                                     )}
-                                </TouchableOpacity>;
+                                </TouchableOpacity>
 
                                 <Image
                                   source={{ uri: imageUrl }}

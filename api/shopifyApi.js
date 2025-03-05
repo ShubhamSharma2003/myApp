@@ -503,7 +503,7 @@ export const fetchProductByHandle = async (handle) => {
         compareAtPrice: variant?.compareAtPrice?.amount || null,
         currency: variant.price?.currencyCode,
         availableForSale: variant?.availableForSale,
-        selectedOptions: variant?.selectedOptions.reduce((acc, option) => {
+        selectedOptions: variant.selectedOptions.reduce((acc, option) => {
           acc[option.name] = option.value;
           return acc;
         }, {}),

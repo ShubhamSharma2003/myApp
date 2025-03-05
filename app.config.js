@@ -1,10 +1,7 @@
-import 'dotenv/config';
-
 export default {
   expo: {
     name: 'goNoise',
     slug: 'ecommerce-firebase',
-    privacy: 'public',
     platforms: ['ios', 'android'],
     version: '0.0.1',
     orientation: 'portrait',

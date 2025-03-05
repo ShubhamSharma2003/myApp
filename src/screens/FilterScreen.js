@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ScrollView, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider';
+// import Slider from '@react-native-community/slider';
 import { fetchProducts } from '../../api/shopifyApi';
 
 const FilterScreen = ({ navigation, route }) => {
     const [variantTitles, setVariantTitles] = useState([]);
     const [selectedVariants, setSelectedVariants] = useState(route.params?.selectedVariants || []);
-    const [minPrice, setMinPrice] = useState(1000);
-    const [maxPrice, setMaxPrice] = useState(10000);
-    const [priceRange, setPriceRange] = useState(route.params?.priceRange || 10000);
+    // const [minPrice, setMinPrice] = useState(1000);
+    // const [maxPrice, setMaxPrice] = useState(10000);
+    // const [priceRange, setPriceRange] = useState(route.params?.priceRange || 10000);
     const [sortBy, setSortBy] = useState(route.params?.sortBy || '');
     const [tags, setTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState(route.params?.selectedTags || []);
     const [loading, setLoading] = useState(true);
-    const priceRef = useRef(priceRange);
+    // const priceRef = useRef(priceRange);
 
     useEffect(() => {
         const getFilters = async () => {
@@ -22,27 +22,27 @@ const FilterScreen = ({ navigation, route }) => {
             const products = await fetchProducts("smart-watches");
             if (!products) return;
             let variants = new Set();
-            let prices = [];
+            // let prices = [];
             let uniqueTags = new Set();
 
             products?.products.forEach(product => {
                 product.variants.forEach(variant => {
                     variants.add(variant.title);
-                    if (variant.price) prices.push(parseFloat(variant.price));
+                    // if (variant.price) prices.push(parseFloat(variant.price));
                 });
                 if (product.filterTags) {
                     product.filterTags.forEach(tag => uniqueTags.add(tag));
                 }
             });
 
-            if (prices.length > 0) {
-                setMinPrice(Math.min(...prices));
-                setMaxPrice(Math.max(...prices));
+            // if (prices.length > 0) {
+            //     setMinPrice(Math.min(...prices));
+            //     setMaxPrice(Math.max(...prices));
 
-                if (!route.params?.priceRange) {
-                    setPriceRange(Math.max(...prices));
-                }
-            }
+            //     if (!route.params?.priceRange) {
+            //         setPriceRange(Math.max(...prices));
+            //     }
+            // }
 
             setVariantTitles([...variants]);
             setTags([...uniqueTags]);
@@ -74,7 +74,7 @@ const FilterScreen = ({ navigation, route }) => {
                     <TouchableOpacity onPress={() => {
                         setSelectedVariants([]);
                         setSelectedTags([]);
-                        setPriceRange(maxPrice);
+                        // setPriceRange(maxPrice);
                         setSortBy('');
                     }}>
                         <Text style={styles.clearText}>Clear All</Text>
@@ -111,7 +111,7 @@ const FilterScreen = ({ navigation, route }) => {
                     </View>
 
                     {/* Price Filter */}
-                    <Text style={styles.heading}>Price Range</Text>
+                    {/* <Text style={styles.heading}>Price Range</Text>
                     <Slider
                         style={styles.slider}
                         minimumValue={minPrice}
@@ -124,7 +124,7 @@ const FilterScreen = ({ navigation, route }) => {
                         maximumTrackTintColor="#ccc"
                         thumbTintColor="black"
                     />
-                    <Text style={styles.sliderText}>Up to ₹{priceRange}</Text>
+                    <Text style={styles.sliderText}>Up to ₹{priceRange}</Text> */}
 
                     {/* Tag Filter */}
                     <Text style={styles.heading}>Filter by Tags</Text>
@@ -163,11 +163,21 @@ const FilterScreen = ({ navigation, route }) => {
 
                 {/* Sticky Apply Filters Button */}
                 <View style={styles.stickyButtonContainer}>
-                    <TouchableOpacity
-                        style={styles.applyButton}
-                            onPress={() => navigation.navigate('CollectionScreen', { selectedVariants, selectedTags, priceRange, sortBy, tags })}                    >
-                        <Text style={styles.applyButtonText}>Apply Filters</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity
+    style={styles.applyButton}
+    onPress={() => {
+        console.log('Filters Applied:', { selectedVariants, selectedTags, sortBy });
+        navigation.navigate('CollectionScreen', { 
+            handle: route.params?.handle || "smart-watches",  // Preserve handle
+            selectedVariants, 
+            selectedTags, 
+            sortBy 
+        });
+    }}
+>
+    <Text style={styles.applyButtonText}>Apply Filters</Text>
+</TouchableOpacity>
+
                 </View>
             </View>
         </SafeAreaView>
@@ -192,8 +202,8 @@ const styles = StyleSheet.create({
     tagSelected: { backgroundColor: "black" },
     tagText: { color: "black" },
     tagTextSelected: { color: "white" },
-    slider: { width: "100%", height: 20, marginVertical: 10 },
-    sliderText: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
+    // slider: { width: "100%", height: 20, marginVertical: 10 },
+    // sliderText: { fontSize: 16, fontWeight: "bold", textAlign: "center" },
 
     // Sort By styles
     sortHeading: {
